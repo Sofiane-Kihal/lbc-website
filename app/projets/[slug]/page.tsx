@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
@@ -5,6 +6,46 @@ import { getProjects } from '@/lib/storage';
 import Footer from '@/components/Footer';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const projects = await getProjects();
+  const project = projects.find((p) => p.slug === slug);
+  if (!project) return { title: 'Projet introuvable' };
+
+  const title =
+    project.metaTitle || `${project.title} — La Bande Créative`;
+  const description =
+    project.metaDescription ||
+    project.description.slice(0, 160) ||
+    `Projet ${project.categories.join(', ')} réalisé pour ${project.client} en ${project.year}.`;
+  const ogImage =
+    project.cover.startsWith('http') || project.cover.startsWith('/api/media/')
+      ? project.cover
+      : undefined;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: ogImage
+        ? [{ url: ogImage, alt: project.coverAlt || project.title }]
+        : undefined,
+    },
+    twitter: {
+      card: ogImage ? 'summary_large_image' : 'summary',
+      title,
+      description,
+      images: ogImage ? [ogImage] : undefined,
+    },
+  };
+}
 
 const gradients: Record<string, string> = {
   'gradient:sage→moss': 'linear-gradient(135deg, #5d6ef4 0%, #010101 100%)',
@@ -19,7 +60,7 @@ function coverStyle(cover: string): React.CSSProperties {
   if (cover?.startsWith('gradient:')) {
     return { backgroundImage: gradients[cover] || gradients['gradient:sage→moss'] };
   }
-  if (cover?.startsWith('http')) {
+  if (cover?.startsWith('http') || cover?.startsWith('/')) {
     return {
       backgroundImage: `url(${cover})`,
       backgroundSize: 'cover',
@@ -56,17 +97,28 @@ export default async function ProjectPage({
         </div>
       </header>
 
-      <main>
-        <section className="relative h-[60vh] min-h-[400px] grain" style={coverStyle(project.cover)}>
+      <main className="bg-cream text-sage">
+        <section
+          className="relative h-[60vh] min-h-[400px] grain"
+          style={coverStyle(project.cover)}
+          aria-label={
+            project.coverAlt || `${project.title} — ${project.categories.join(', ')}`
+          }
+        >
           <div className="absolute inset-0 bg-gradient-to-t from-sage/85 via-sage/30 to-transparent" />
           <div className="container-wide relative h-full flex flex-col justify-end pb-16 text-cream">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex flex-wrap items-center gap-2 mb-4">
               <span className="rounded-full bg-cream/15 backdrop-blur px-3 py-1 text-xs uppercase tracking-widest">
                 {project.year}
               </span>
-              <span className="rounded-full bg-cream/15 backdrop-blur px-3 py-1 text-xs uppercase tracking-widest">
-                {project.category}
-              </span>
+              {project.categories.map((c) => (
+                <span
+                  key={c}
+                  className="rounded-full bg-cream/15 backdrop-blur px-3 py-1 text-xs uppercase tracking-widest"
+                >
+                  {c}
+                </span>
+              ))}
             </div>
             <h1 className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.95]">
               {project.title}
@@ -116,6 +168,7 @@ export default async function ProjectPage({
                     href={`/projets/${p.slug}`}
                     className="group block relative aspect-[4/5] rounded-3xl overflow-hidden"
                     style={coverStyle(p.cover)}
+                    aria-label={p.coverAlt || `${p.title} — ${p.categories.join(', ')}`}
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-sage/85 via-sage/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity" />
                     <div className="absolute top-5 right-5 grid h-9 w-9 place-items-center rounded-full bg-cream/85 text-sage transition-transform group-hover:rotate-45">
@@ -123,7 +176,7 @@ export default async function ProjectPage({
                     </div>
                     <div className="absolute bottom-5 left-5 right-5 text-cream">
                       <div className="text-xs uppercase tracking-widest opacity-80">
-                        {p.category}
+                        {p.categories.join(' · ')}
                       </div>
                       <div className="font-display text-2xl mt-1">{p.title}</div>
                     </div>

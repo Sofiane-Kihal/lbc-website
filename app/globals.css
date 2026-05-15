@@ -23,15 +23,15 @@ html {
 }
 
 body {
-  background: var(--cream);
-  color: var(--sage);
+  background: var(--sage);
+  color: var(--cream);
   font-family: var(--font-montserrat), system-ui, sans-serif;
   overflow-x: hidden;
 }
 
 ::selection {
-  background: var(--sage);
-  color: var(--cream);
+  background: var(--cream);
+  color: var(--sage);
 }
 
 .font-display {
@@ -89,9 +89,15 @@ body {
     @apply rounded-3xl bg-white/60 backdrop-blur-sm border border-sage/10 shadow-[0_1px_2px_rgba(93,110,244,0.04),0_8px_30px_rgba(93,110,244,0.08)];
   }
 
+  /* For sage-background sections: same shape, but cream-toned so cards pop
+     against indigo. Use this when the section bg is sage. */
+  .card-pop {
+    @apply rounded-3xl bg-cream/95 backdrop-blur-sm border border-cream/20 shadow-[0_1px_2px_rgba(1,1,1,0.06),0_18px_60px_rgba(1,1,1,0.18)];
+  }
+
   .gradient-text {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #5D6EF4 0%, #FF6B35 50%, #5D6EF4 100%);
+    background-image: linear-gradient(135deg, #FAF1E6 0%, #FF6B35 50%, #FAF1E6 100%);
     background-size: 200% 200%;
     animation: gradient 8s ease infinite;
   }
@@ -119,11 +125,23 @@ body {
   100% { transform: translateX(-50%); }
 }
 
+/* Typewriter cursor — hard step blink (terminal feel, no fade) */
+@keyframes cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.cursor-blink {
+  animation: cursor-blink 1s steps(1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cursor-blink { animation: none; opacity: 1; }
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: var(--cream); }
-::-webkit-scrollbar-thumb { background: var(--moss); border-radius: 999px; }
-::-webkit-scrollbar-thumb:hover { background: var(--sage); }
+::-webkit-scrollbar-track { background: var(--sage); }
+::-webkit-scrollbar-thumb { background: var(--cream); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* Reveal */
 .reveal {

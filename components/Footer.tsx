@@ -17,7 +17,7 @@ const socials = [
   { icon: Instagram, label: 'Instagram', href: '#' },
   { icon: Linkedin, label: 'LinkedIn', href: '#' },
   { icon: Youtube, label: 'YouTube', href: '#' },
-  { icon: Mail, label: 'Email', href: 'mailto:hello@labandecreative.com' },
+  { icon: Mail, label: 'Email', href: 'mailto:contact@labandecreative.fr' },
 ];
 
 export default function Footer() {
@@ -96,7 +96,7 @@ export default function Footer() {
               ))}
             </div>
             <p className="mt-6 text-cream/60 text-xs">
-              hello@labandecreative.com
+              contact@labandecreative.fr
             </p>
           </motion.div>
         </div>

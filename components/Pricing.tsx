@@ -12,6 +12,12 @@ function PricingCard({ item, idx }: { item: PricingItem; idx: number }) {
   const [tier, setTier] = useState(0);
   const displayPrice = hasTiers ? item.tiers![tier].price : item.price;
   const tierGroupId = `tier-${item.id}`;
+  const tierBullets = hasTiers ? item.tiers![tier]?.bullets : undefined;
+  const displayBullets =
+    tierBullets && tierBullets.length > 0 ? tierBullets : item.bullets;
+  const bulletsKey = hasTiers
+    ? `${item.id}-${tier}-${displayBullets.length}`
+    : item.id;
 
   return (
     <motion.div
@@ -38,27 +44,46 @@ function PricingCard({ item, idx }: { item: PricingItem; idx: number }) {
       )}
 
       {hasTiers && (
-        <div className="mt-4 inline-flex items-center gap-1 p-1 rounded-full bg-sage/8 border border-sage/15 self-start relative">
-          {item.tiers!.map((t, i) => (
-            <button
-              key={t.label}
-              onClick={() => setTier(i)}
-              className={cn(
-                'relative rounded-full text-xs font-medium px-3 py-1.5 transition-colors duration-300',
-                tier === i ? 'text-cream' : 'text-sage/70 hover:text-sage'
-              )}
-            >
-              {tier === i && (
+        <>
+          <div className="mt-4 inline-flex items-center gap-1 p-1 rounded-full bg-sage/8 border border-sage/15 self-start relative">
+            {item.tiers!.map((t, i) => (
+              <button
+                key={t.label}
+                onClick={() => setTier(i)}
+                className={cn(
+                  'relative rounded-full text-xs font-medium px-3 py-1.5 transition-colors duration-300',
+                  tier === i ? 'text-cream' : 'text-sage/70 hover:text-sage'
+                )}
+              >
+                {tier === i && (
+                  <motion.span
+                    layoutId={tierGroupId}
+                    transition={{ ...SOFT_SPRING, stiffness: 320, damping: 26 }}
+                    className="absolute inset-0 rounded-full bg-sage shadow-sm shadow-sage/30"
+                  />
+                )}
+                <span className="relative z-10">{t.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {item.tiers![tier]?.description && (
+            <div className="mt-2 min-h-[18px] relative">
+              <AnimatePresence mode="popLayout">
                 <motion.span
-                  layoutId={tierGroupId}
-                  transition={{ ...SOFT_SPRING, stiffness: 320, damping: 26 }}
-                  className="absolute inset-0 rounded-full bg-sage shadow-sm shadow-sage/30"
-                />
-              )}
-              <span className="relative z-10">{t.label}</span>
-            </button>
-          ))}
-        </div>
+                  key={item.tiers![tier].description}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.25 }}
+                  className="inline-block text-xs italic text-sage/65"
+                >
+                  {item.tiers![tier].description}
+                </motion.span>
+              </AnimatePresence>
+            </div>
+          )}
+        </>
       )}
 
       <div className="mt-5 flex items-baseline gap-2 min-h-[44px] relative">
@@ -77,25 +102,33 @@ function PricingCard({ item, idx }: { item: PricingItem; idx: number }) {
         <span className="text-sm text-sage/50">HT</span>
       </div>
 
-      {item.bullets.length > 0 && (
-        <ul className="mt-5 space-y-2 relative">
-          {item.bullets.map((b, i) => (
-            <motion.li
-              key={b}
-              initial={{ opacity: 0, x: -6 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ ...SOFT_SPRING, delay: idx * 0.04 + 0.15 + i * 0.035 }}
-              className="flex items-start gap-3 text-[14px] text-sage/80"
-            >
-              <span
-                aria-hidden
-                className="mt-[10px] h-px w-3 flex-shrink-0 bg-accent/70 group-hover:w-5 transition-all duration-500"
-              />
-              <span>{b}</span>
-            </motion.li>
-          ))}
-        </ul>
+      {displayBullets.length > 0 && (
+        <AnimatePresence mode="wait">
+          <motion.ul
+            key={bulletsKey}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+            className="mt-5 space-y-2 relative"
+          >
+            {displayBullets.map((b, i) => (
+              <motion.li
+                key={`${b}-${i}`}
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ ...SOFT_SPRING, delay: 0.05 + i * 0.035 }}
+                className="flex items-start gap-3 text-[14px] text-sage/80"
+              >
+                <span
+                  aria-hidden
+                  className="mt-[10px] h-px w-3 flex-shrink-0 bg-accent/70 group-hover:w-5 transition-all duration-500"
+                />
+                <span>{b}</span>
+              </motion.li>
+            ))}
+          </motion.ul>
+        </AnimatePresence>
       )}
     </motion.div>
   );
@@ -116,44 +149,59 @@ export default function Pricing({ groups }: { groups: PricingGroup[] }) {
         <Reveal>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-10 md:gap-6 mb-12">
             <div>
-              <div className="eyebrow text-cream">
-                <span className="eyebrow-num">04</span>
-                <span className="eyebrow-rule" />
-                <span className="eyebrow-label">À la carte</span>
-              </div>
-              <h2 className="font-display mt-4 text-4xl md:text-6xl leading-[1.05]">
+              <h2 className="font-display text-4xl md:text-6xl leading-[1.05]">
                 Nos grilles{' '}
                 <span className="italic text-cream/70">tarifaires</span>
               </h2>
             </div>
 
-            {/* Editorial side-note — owns the indigo background with subtle glass */}
+            {/* Editorial side-note — comic-style speech bubble pointing at the title */}
             <motion.aside
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 16, scale: 0.92 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
               transition={{ ...SOFT_SPRING, delay: 0.15 }}
-              className="relative max-w-sm self-start md:self-end rounded-2xl bg-cream/[0.06] backdrop-blur-sm border border-cream/15 px-6 py-5"
+              className="relative max-w-sm self-start md:self-end"
             >
-              <div className="flex items-center gap-2.5 mb-3">
-                <span className="relative inline-flex h-1.5 w-1.5">
-                  <motion.span
-                    aria-hidden
-                    animate={{ scale: [1, 2.6, 1], opacity: [0.7, 0, 0.7] }}
-                    transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
-                    className="absolute inset-0 rounded-full bg-accent motion-reduce:!animate-none"
-                  />
-                  <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-accent" />
-                </span>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-accent">
-                  À savoir
-                </span>
-              </div>
-              <p className="text-[15px] leading-relaxed text-cream/85">
-                Des prestations <strong className="text-cream">indépendantes</strong>,
-                pour quand vous savez exactement ce dont vous avez besoin. Chaque ligne
-                se commande seule, sans engagement régulier ni stratégie incluse.
-              </p>
+              <motion.div
+                animate={{ y: [0, -4, 0], rotate: [-0.4, 0.6, -0.4] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                className="relative rounded-[28px] bg-cream text-sage px-6 py-5 shadow-[0_18px_60px_rgba(1,1,1,0.25)] motion-reduce:!animate-none"
+              >
+                {/* Tail pointing toward the title (top-left) */}
+                <span
+                  aria-hidden
+                  className="absolute -top-2 left-8 h-5 w-5 rotate-45 bg-cream rounded-[4px]"
+                />
+                {/* Tiny secondary "thought" dot, comic-style */}
+                <motion.span
+                  aria-hidden
+                  animate={{ y: [0, -2, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  className="absolute -top-6 left-4 h-2 w-2 rounded-full bg-cream/80 motion-reduce:!hidden"
+                />
+
+                <div className="flex items-center gap-2.5 mb-3 relative">
+                  <span className="relative inline-flex h-1.5 w-1.5">
+                    <motion.span
+                      aria-hidden
+                      animate={{ scale: [1, 2.6, 1], opacity: [0.7, 0, 0.7] }}
+                      transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
+                      className="absolute inset-0 rounded-full bg-accent motion-reduce:!animate-none"
+                    />
+                    <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-accent" />
+                  </span>
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-accent">
+                    À savoir
+                  </span>
+                </div>
+                <p className="text-[15px] leading-relaxed text-sage/85 relative">
+                  Des prestations <strong className="text-sage">indépendantes</strong>,
+                  pour quand vous savez déjà ce que vous voulez dire et à qui. Chaque
+                  ligne se commande seule, sans engagement régulier ni stratégie
+                  incluse.
+                </p>
+              </motion.div>
             </motion.aside>
           </div>
         </Reveal>
@@ -273,8 +321,9 @@ export default function Pricing({ groups }: { groups: PricingGroup[] }) {
           <p className="text-cream/85 text-sm md:text-base leading-relaxed">
             Ces tarifs donnent un{' '}
             <strong className="text-cream">ordre de grandeur</strong>. Votre projet réel
-            donne toujours lieu à un devis sur-mesure, ajusté à votre objectif et à
-            votre budget — on n'aime pas vendre des packages figés.
+            donne toujours lieu à un devis sur-mesure, ajusté à votre propos, votre
+            objectif et votre budget — on n'aime pas vendre des packages figés, ni
+            cocher des cases sans intention derrière.
           </p>
         </div>
       </div>

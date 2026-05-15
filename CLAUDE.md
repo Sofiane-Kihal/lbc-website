@@ -73,22 +73,36 @@ c'est le fil rouge. Tout le contenu doit refléter cette double casquette.
 
 ### Rythme des sections
 
-L'alternance cream / indigo / noir est **délibérée** (cf. neuro-marketing) :
+**Le fond par défaut du site est `sage` (indigo)** — c'est lui qui porte
+l'identité. Le `cream` n'est utilisé qu'en respiration ponctuelle, là où les
+contenus visuels (vignettes projets, comparatif d'abonnements) gagnent en
+clarté sur fond neutre.
 
 ```
-Hero            cream + animations
-LogoMarquee     indigo (réduit, sans label)
-Projects        cream + dots pattern
-Services        cream + drifting blobs
+Hero            sage (body) + DriftingBlobs variant="indigo" + FloatingParticles
+LogoMarquee     sage (variant="indigo")
+Projects        cream (bg-cream explicite) + dots sage
+Services        sage (body) + DriftingBlobs variant="indigo" + cards .card-pop
 Marquee         noir (slogans)
-Pricing         indigo (la grosse section)
-Subscriptions   cream
-Contact         noir (le grand final)
+Pricing         sage (déjà explicite)
+Subscriptions   cream (bg-cream explicite)
+Contact         noir
 Footer          noir
 ```
 
-Ne pas casser ce rythme sans raison : c'est lui qui empêche la sensation
-"trop beige" du cream.
+- Le `body` a `background: var(--sage)` ; les sections cream ou noir doivent
+  poser leur `bg-cream` / `bg-moss` explicitement.
+- Sur fond sage, utiliser `.card-pop` plutôt que `.card-soft` : c'est la
+  variante cream/95 qui ressort. `.card-soft` reste pour les sections cream.
+- Sur fond sage, les textes courants utilisent `text-cream` (et `text-cream/80`
+  pour le secondaire) ; pour un bouton secondaire, inliner une bordure cream
+  inversée (cf. Hero "Voir nos projets") plutôt que `btn-secondary` qui est
+  pensé pour le cream.
+- Le `btn-primary` étant sage, il disparaît sur fond sage : utiliser un bouton
+  cream (cf. Navigation desktop / mobile) ou `btn-accent` pour les CTA.
+
+Ne pas casser ce rythme sans raison : c'est lui qui empêche le côté monochrome
+indigo de devenir lourd.
 
 ### Où utiliser l'orange
 

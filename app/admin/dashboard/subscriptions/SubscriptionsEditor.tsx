@@ -171,6 +171,51 @@ export default function SubscriptionsEditor({
                   }
                 />
               </Field>
+
+              <div className="pt-3 mt-1 border-t border-sage/10">
+                <div className="flex items-baseline justify-between gap-3 mb-2">
+                  <span className="text-xs font-semibold text-sage">
+                    Option associée
+                  </span>
+                  <span className="text-[10px] font-medium uppercase tracking-[0.28em] text-sage/45">
+                    Facultatif
+                  </span>
+                </div>
+                <p className="text-[11px] text-sage/55 mb-3 leading-relaxed">
+                  Apparaît sur la carte sous les bullets, et comme supplément dans
+                  la modale de contact rapide (ex. « Community Management +500€ »).
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Nom de l'option">
+                    <input
+                      className="input-base"
+                      value={s.addon?.name || ''}
+                      placeholder="Community Management"
+                      onChange={(e) => {
+                        const name = e.target.value;
+                        const price = s.addon?.price || '';
+                        update(s.id, {
+                          addon: name || price ? { name, price } : undefined,
+                        });
+                      }}
+                    />
+                  </Field>
+                  <Field label="Prix">
+                    <input
+                      className="input-base"
+                      value={s.addon?.price || ''}
+                      placeholder="500€"
+                      onChange={(e) => {
+                        const price = e.target.value;
+                        const name = s.addon?.name || '';
+                        update(s.id, {
+                          addon: name || price ? { name, price } : undefined,
+                        });
+                      }}
+                    />
+                  </Field>
+                </div>
+              </div>
             </div>
           </article>
         ))}

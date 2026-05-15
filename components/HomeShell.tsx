@@ -14,22 +14,27 @@ import QuickContactModal from '@/components/QuickContactModal';
 import Marquee from '@/components/Marquee';
 import LogoMarquee from '@/components/LogoMarquee';
 import { ScrollProgress } from '@/components/MotionPrimitives';
-import type { Project, PricingGroup, Subscription } from '@/lib/defaults';
+import type { Project, PricingGroup, Subscription, Banners } from '@/lib/defaults';
 
 export default function HomeShell({
   projects,
   pricing,
   subscriptions,
+  banners,
 }: {
   projects: Project[];
   pricing: PricingGroup[];
   subscriptions: Subscription[];
+  banners: Banners;
 }) {
   const [intakeOpen, setIntakeOpen] = useState(false);
   const [quickPreset, setQuickPreset] = useState<{
     kind: 'subscription';
+    id: string;
     name: string;
     price?: string;
+    compact?: boolean;
+    addon?: { id: string; name: string; price: string; cadence: string };
   } | null>(null);
 
   const openIntake = () => setIntakeOpen(true);
@@ -38,8 +43,18 @@ export default function HomeShell({
   const chooseSubscription = (sub: Subscription) =>
     setQuickPreset({
       kind: 'subscription',
+      id: sub.id,
       name: sub.name,
       price: `${sub.price} HT ${sub.cadence}`,
+      compact: sub.compact,
+      addon: sub.addon
+        ? {
+            id: `${sub.id}-addon`,
+            name: sub.addon.name,
+            price: sub.addon.price,
+            cadence: sub.cadence,
+          }
+        : undefined,
     });
   const closeQuick = () => setQuickPreset(null);
 
@@ -49,19 +64,10 @@ export default function HomeShell({
       <Navigation onOpenIntake={openIntake} />
       <main>
         <Hero onOpenIntake={openIntake} />
-        <LogoMarquee variant="indigo" />
+        <LogoMarquee variant="indigo" logos={banners.logos} />
         <ProjectsGrid projects={projects} />
         <Services />
-        <Marquee
-          variant="noir"
-          speed={50}
-          items={[
-            'On allie créa & perfo',
-            "Pas d'effets sans stratégie",
-            'Mesurer · Itérer · Performer',
-            "L'œil qui pique, la data qui parle",
-          ]}
-        />
+        <Marquee variant="noir" speed={50} items={banners.slogans} />
         <Pricing groups={pricing} />
         <Subscriptions items={subscriptions} onChoose={chooseSubscription} />
         <Contact onOpenIntake={openIntake} />

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, Tag, Repeat, LayoutDashboard } from 'lucide-react';
+import { Briefcase, Tag, Repeat, LayoutDashboard, Megaphone } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const tabs = [
@@ -10,6 +10,7 @@ const tabs = [
   { href: '/admin/dashboard/projects', label: 'Projets', icon: Briefcase },
   { href: '/admin/dashboard/pricing', label: 'Tarifs', icon: Tag },
   { href: '/admin/dashboard/subscriptions', label: 'Abonnements', icon: Repeat },
+  { href: '/admin/dashboard/banners', label: 'Banderoles', icon: Megaphone },
 ];
 
 export default function NavTabs() {

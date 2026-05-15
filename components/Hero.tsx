@@ -1,11 +1,108 @@
 'use client';
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { DriftingBlobs, FloatingParticles } from './BackgroundFx';
 import { SOFT_SPRING } from './Reveal';
 import { Magnetic, TiltCard, WordReveal } from './MotionPrimitives';
+
+const TAGLINE_PHRASES = [
+  'qui performe.',
+  'qui raconte.',
+  'qui touche.',
+  'qui pense.',
+];
+
+/**
+ * Typewriter that cycles through a list of phrases with a hard-blinking
+ * cursor (terminal-style). Respects prefers-reduced-motion by rendering
+ * just the first phrase statically.
+ */
+function Typewriter({
+  phrases,
+  startDelayMs = 0,
+  typeMs = 65,
+  deleteMs = 35,
+  holdMs = 2400,
+  gapMs = 350,
+}: {
+  phrases: string[];
+  startDelayMs?: number;
+  typeMs?: number;
+  deleteMs?: number;
+  holdMs?: number;
+  gapMs?: number;
+}) {
+  const prefersReduced = useReducedMotion();
+  const [text, setText] = useState('');
+  const [idx, setIdx] = useState(0);
+  const [phase, setPhase] = useState<'wait' | 'typing' | 'holding' | 'deleting'>(
+    'wait'
+  );
+
+  // Kick off after the initial delay.
+  useEffect(() => {
+    if (prefersReduced) return;
+    const t = setTimeout(() => setPhase('typing'), startDelayMs);
+    return () => clearTimeout(t);
+  }, [startDelayMs, prefersReduced]);
+
+  useEffect(() => {
+    if (prefersReduced) return;
+    const phrase = phrases[idx];
+    if (!phrase) return;
+
+    if (phase === 'typing') {
+      if (text.length < phrase.length) {
+        const t = setTimeout(
+          () => setText(phrase.slice(0, text.length + 1)),
+          typeMs
+        );
+        return () => clearTimeout(t);
+      }
+      const t = setTimeout(() => setPhase('holding'), 0);
+      return () => clearTimeout(t);
+    }
+    if (phase === 'holding') {
+      const t = setTimeout(() => setPhase('deleting'), holdMs);
+      return () => clearTimeout(t);
+    }
+    if (phase === 'deleting') {
+      if (text.length > 0) {
+        const t = setTimeout(
+          () => setText(phrase.slice(0, text.length - 1)),
+          deleteMs
+        );
+        return () => clearTimeout(t);
+      }
+      const t = setTimeout(() => {
+        setIdx((i) => (i + 1) % phrases.length);
+        setPhase('typing');
+      }, gapMs);
+      return () => clearTimeout(t);
+    }
+  }, [text, phase, idx, phrases, typeMs, deleteMs, holdMs, gapMs, prefersReduced]);
+
+  if (prefersReduced) {
+    return <span className="italic">{phrases[0]}</span>;
+  }
+
+  return (
+    <span className="italic">
+      {text}
+      <span
+        aria-hidden
+        className="cursor-blink inline-block align-baseline w-[2px] md:w-[3px] h-[0.78em] bg-accent ml-[0.06em] translate-y-[0.08em]"
+      />
+    </span>
+  );
+}
 
 export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -26,7 +123,7 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
       className="relative pt-[140px] pb-24 lg:pt-[180px] lg:pb-32 overflow-hidden grain"
     >
       {/* Animated background layers */}
-      <DriftingBlobs variant="cream" />
+      <DriftingBlobs variant="indigo" />
       <FloatingParticles />
 
       <div className="container-wide relative">
@@ -37,7 +134,7 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-3 text-sage"
+              className="inline-flex items-center gap-3 text-cream"
             >
               <motion.span
                 animate={{ rotate: [0, 18, -10, 0] }}
@@ -51,7 +148,7 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
               </span>
             </motion.div>
 
-            <h1 className="font-display mt-6 text-[44px] md:text-[64px] lg:text-[84px] leading-[0.95] tracking-tight text-sage">
+            <h1 className="font-display mt-6 text-[44px] md:text-[64px] lg:text-[84px] leading-[0.95] tracking-tight text-cream">
               <WordReveal text="L'agence de communication" delay={0.05} />{' '}
               <span className="inline-block overflow-hidden align-baseline pb-[0.15em]">
                 <motion.span
@@ -64,35 +161,26 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
                 </motion.span>
               </span>
               <br />
-              <span className="inline-block overflow-hidden align-baseline pb-[0.15em]">
-                <motion.span
-                  initial={{ y: 60, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ ...SOFT_SPRING, delay: 0.4 }}
-                  className="italic font-normal text-accent inline-block relative"
-                >
-                  qui performe.
-                  <motion.span
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 0.7, delay: 0.95, ease: [0.65, 0, 0.35, 1] }}
-                    style={{ transformOrigin: '0% 50%' }}
-                    className="absolute -bottom-1 left-0 right-2 h-[3px] bg-accent/70 rounded-full motion-reduce:!hidden"
-                  />
-                </motion.span>
-              </span>
+              <motion.span
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ ...SOFT_SPRING, delay: 0.4 }}
+                className="font-normal text-accent inline-block"
+              >
+                <Typewriter phrases={TAGLINE_PHRASES} startDelayMs={950} />
+              </motion.span>
             </h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...SOFT_SPRING, delay: 0.55 }}
-              className="mt-7 max-w-xl text-lg md:text-xl text-sage/75 leading-relaxed"
+              className="mt-7 max-w-xl text-lg md:text-xl text-cream/80 leading-relaxed"
             >
-              On allie <strong className="text-sage">création artistique</strong> et{' '}
-              <strong className="text-sage">performance</strong>. Pas de jolie vidéo qui
-              dort dans un drive — une stratégie qui transforme votre audience en clients,
-              et une exécution qui fait du bien aux yeux.
+              On allie <strong className="text-cream">création artistique</strong> et{' '}
+              <strong className="text-cream">performance</strong>. Un fond qui pense,
+              une forme qui touche — et derrière, une stratégie qui transforme. Pas de
+              jolies vidéos qui dorment dans un drive, pas de chiffres sans propos.
             </motion.p>
 
             <motion.div
@@ -117,7 +205,10 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
                   />
                 </button>
               </Magnetic>
-              <a href="#projets" className="btn-secondary group">
+              <a
+                href="#projets"
+                className="group inline-flex items-center justify-center gap-2 rounded-full border border-cream/40 bg-transparent px-7 py-3.5 font-medium text-cream transition-all duration-300 hover:border-cream hover:bg-cream hover:text-sage hover:-translate-y-0.5"
+              >
                 Voir nos projets
                 <ArrowRight
                   size={16}
@@ -130,7 +221,7 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.95 }}
-              className="mt-12 flex items-center gap-6 text-sage/60 text-sm"
+              className="mt-12 flex items-center gap-6 text-cream/70 text-sm"
             >
               <div className="flex -space-x-2">
                 {['#5d6ef4', '#FF6B35', '#010101'].map((c, i) => (
@@ -261,13 +352,13 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1.6 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-sage/40 text-[10px] font-medium uppercase tracking-[0.3em]"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 text-cream/50 text-[10px] font-medium uppercase tracking-[0.3em]"
       >
         <span>Scroll</span>
         <motion.span
-          animate={{ y: [0, 6, 0], opacity: [0.4, 1, 0.4] }}
+          animate={{ y: [0, 6, 0], opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="block h-8 w-px bg-sage/40 motion-reduce:!animate-none"
+          className="block h-8 w-px bg-cream/50 motion-reduce:!animate-none"
         />
       </motion.div>
     </section>

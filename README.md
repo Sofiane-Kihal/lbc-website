@@ -147,7 +147,7 @@ remplir :
 | `ADMIN_EMAILS`    | Liste (séparée par des virgules) des emails autorisés à se connecter à `/admin` | Tes emails et ceux de ton équipe : `sofiane@labandecreative.com,marie@labandecreative.com` |
 | `ADMIN_PASSWORD`  | Mot de passe **partagé** par toute l'équipe pour l'admin               | Choisis un mot de passe fort. Tu peux en générer un avec `openssl rand -base64 24`  |
 | `SESSION_SECRET`  | Clé secrète qui signe les cookies de session (sécurité)                | **Doit faire au moins 32 caractères aléatoires**. Génère-la avec `openssl rand -base64 48` |
-| `CONTACT_EMAIL`   | (Optionnel) email où tu veux recevoir les briefs prospects             | `hello@labandecreative.com`                                                         |
+| `CONTACT_EMAIL`   | (Optionnel) email où tu veux recevoir les briefs prospects             | `contact@labandecreative.fr`                                                         |
 
 **Génère un `SESSION_SECRET` maintenant** dans ton terminal :
 
@@ -240,7 +240,7 @@ Ajoute exactement les **mêmes variables** que dans ton `.env.local`, mais avec 
 | `ADMIN_EMAILS`    | `sofiane@labandecreative.com`                    |
 | `ADMIN_PASSWORD`  | un mot de passe fort, **différent du local**     |
 | `SESSION_SECRET`  | une nouvelle valeur générée par `openssl rand -base64 48` |
-| `CONTACT_EMAIL`   | `hello@labandecreative.com`                      |
+| `CONTACT_EMAIL`   | `contact@labandecreative.fr`                      |
 
 > 💡 Si tu as déjà déployé et que tu veux les ajouter après coup : Netlify dashboard
 > → ton site → **Site configuration** → **Environment variables** → **Add a variable**.

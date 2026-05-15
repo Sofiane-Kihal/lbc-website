@@ -5,16 +5,22 @@ export type Project = {
   slug: string;
   title: string;
   client: string;
-  category: string;
+  categories: string[];
   year: string;
-  cover: string; // gradient label or image URL
+  cover: string; // gradient label, http URL, or /api/media/<key>
+  coverAlt?: string; // alt / OG image description
   description: string;
   scope: string[];
+  // SEO
+  metaTitle?: string; // overrides <title> for /projets/<slug>
+  metaDescription?: string; // <meta name="description">
 };
 
 export type PricingTier = {
   label: string; // e.g. "1 canal"
   price: string; // e.g. "390€"
+  description?: string; // contextual scope label, e.g. "Audit social media"
+  bullets?: string[]; // when set, overrides item.bullets for this tier
 };
 
 export type PricingItem = {
@@ -48,6 +54,24 @@ export type Subscription = {
   // When true, the subscription is shown in a compact "options" block
   // (used for add-ons like community moderation).
   compact?: boolean;
+  // Optional, formula-specific add-on (e.g. Community Management priced
+  // per formula). Surfaced on the card and in the QuickContactModal.
+  addon?: {
+    name: string;
+    price: string; // e.g. "500€"
+  };
+};
+
+export type LogoItem = {
+  id: string;
+  name: string; // alt text + accessible label
+  image?: string; // URL — http(s)://… or /api/media/<key>
+  monochrome?: boolean; // render as cream silhouette on the indigo bg (default true)
+};
+
+export type Banners = {
+  logos: LogoItem[]; // 1st banner — logo wall
+  slogans: string[]; // 2nd banner — text marquee
 };
 
 export const defaultProjects: Project[] = [
@@ -56,7 +80,7 @@ export const defaultProjects: Project[] = [
     slug: 'maison-laurel',
     title: 'Maison Laurel',
     client: 'Laurel Paris',
-    category: 'Stratégie 360 + Production',
+    categories: ['Stratégie 360°', 'Production'],
     year: '2025',
     cover: 'gradient:sage→moss',
     description:
@@ -68,7 +92,7 @@ export const defaultProjects: Project[] = [
     slug: 'orso-restaurant',
     title: 'Orso',
     client: 'Restaurant Orso',
-    category: 'Production locale',
+    categories: ['Production locale'],
     year: '2025',
     cover: 'gradient:moss→stone',
     description:
@@ -80,7 +104,7 @@ export const defaultProjects: Project[] = [
     slug: 'studio-volt',
     title: 'Studio Volt',
     client: 'Volt Innovation',
-    category: 'Film de marque',
+    categories: ['Film de marque'],
     year: '2024',
     cover: 'gradient:sage→stone',
     description:
@@ -92,7 +116,7 @@ export const defaultProjects: Project[] = [
     slug: 'podcast-impact',
     title: 'Impact Podcast',
     client: 'Impact Media',
-    category: 'Podcast & shreds',
+    categories: ['Podcast', 'Shreds'],
     year: '2025',
     cover: 'gradient:stone→cream',
     description:
@@ -104,7 +128,7 @@ export const defaultProjects: Project[] = [
     slug: 'bloom-retail',
     title: 'Bloom Retail',
     client: 'Bloom Concept',
-    category: 'Community management',
+    categories: ['Community management'],
     year: '2025',
     cover: 'gradient:moss→sage',
     description:
@@ -116,7 +140,7 @@ export const defaultProjects: Project[] = [
     slug: 'altea-immobilier',
     title: 'Altéa',
     client: 'Altéa Immobilier',
-    category: 'Stratégie & site web',
+    categories: ['Stratégie', 'Site web'],
     year: '2024',
     cover: 'gradient:sage→cream',
     description:
@@ -129,71 +153,95 @@ export const defaultPricing: PricingGroup[] = [
   {
     id: 'accompagnement',
     title: 'Accompagnement stratégique',
-    description: 'Audit, stratégie : on regarde avant de courir.',
+    description:
+      "Audit, stratégie : on prend le temps de regarder, de lire et de comprendre avant de courir.",
     items: [
       {
-        id: 'audit-sm',
-        name: 'Audit Social Media',
+        id: 'audit',
+        name: 'Audit',
         price: '390€',
-        highlight: 'Tarif selon le nombre de canaux',
+        highlight: 'Tarif selon le périmètre',
         bullets: [
           'État des lieux',
           'Indicateurs de performance',
+          'Veille concurrence & cible',
           'Recommandations actionnables',
         ],
         tiers: [
-          { label: '1 canal', price: '390€' },
-          { label: '2 canaux', price: '590€' },
-          { label: '3 canaux', price: '690€' },
+          { label: '1 canal', price: '390€', description: 'Audit social media' },
+          { label: '2 canaux', price: '590€', description: 'Audit social media' },
+          { label: '3 canaux', price: '690€', description: 'Audit social media' },
+          { label: '360°', price: '990€', description: 'Audit 360°' },
         ],
       },
       {
-        id: 'audit-360',
-        name: 'Audit 360°',
+        id: 'strategie',
+        name: 'Stratégie',
         price: '990€',
-        highlight: 'Site, plateforme, presse, social media',
+        highlight: 'One Shot · Tarif selon le périmètre',
         bullets: [
-          "Vue d'ensemble de votre écosystème",
-          'Concurrence',
-          'Veille sectorielle',
-          'Cible',
-        ],
-      },
-      {
-        id: 'strat-sm',
-        name: 'Stratégie social media',
-        price: '690€',
-        highlight: 'Tarif selon le nombre de canaux',
-        bullets: [
+          'Audit',
           'Persona',
+          'Stratégie',
+          'Calendrier éditorial',
           'Plan 3 à 6 mois',
-          'Ligne éditoriale',
-          'Calendrier',
         ],
         tiers: [
-          { label: '1 canal', price: '690€' },
-          { label: '2 canaux', price: '890€' },
-          { label: '3 canaux', price: '1090€' },
+          {
+            label: '1 canal',
+            price: '990€',
+            description: 'Social Media Strat',
+            bullets: [
+              'Audit',
+              'Persona',
+              'Stratégie',
+              'Calendrier éditorial',
+              'Plan 3 à 6 mois',
+            ],
+          },
+          {
+            label: '3 canaux',
+            price: '1990€',
+            description: 'Social Media Strat +',
+            bullets: [
+              'Audit',
+              'Persona',
+              'Stratégie',
+              'Calendrier éditorial',
+              'Plan 3 à 6 mois',
+            ],
+          },
+          {
+            label: 'Premium',
+            price: '2990€',
+            description: 'Social Media Strat Premium',
+            bullets: [
+              'Audit',
+              'Persona',
+              'Stratégie social media et multi-canal',
+              'Calendrier éditorial',
+              'Site vitrine',
+              'SEO',
+              'Plan 3 à 6 mois',
+            ],
+          },
         ],
       },
       {
-        id: 'strat-360',
-        name: 'Stratégie 360°',
-        price: '1690€',
-        highlight: '3 canaux + site + presse + SEO',
-        bullets: [
-          "Plan d'action global",
-          'Budget',
-          'Tableau social media',
-          'Calendrier complet',
-        ],
+        id: 'ajout-canal',
+        name: 'Ajout d\'un canal',
+        price: '500€',
+        highlight: 'À combiner avec un audit ou une stratégie',
+        bullets: [],
+        compact: true,
       },
     ],
   },
   {
     id: 'production',
     title: 'Production',
-    description: 'On tourne, on monte, on livre.',
+    description:
+      'On tourne, on monte, on livre — avec un soin du détail qui se voit, même quand on ne le cherche pas.',
     items: [
       {
         id: 'p-local',
@@ -353,40 +401,51 @@ export const defaultPricing: PricingGroup[] = [
 export const defaultSubscriptions: Subscription[] = [
   {
     id: 's1',
-    name: 'CM Smartphone',
+    name: 'Studio',
     price: '790€',
     cadence: '/ mois',
     bullets: ['3 posts / semaine', 'Ligne éditoriale', 'Stories'],
+    addon: { name: 'Community Management', price: '500€' },
   },
   {
     id: 's2',
-    name: 'CM Truman',
+    name: 'Premium',
     price: '1 090€',
     cadence: '/ mois',
     featured: true,
     bullets: ['3 posts / semaine', 'Ligne éditoriale', 'Stories', '½ journée de tournage'],
+    addon: { name: 'Community Management', price: '700€' },
   },
   {
     id: 's3',
-    name: 'CM Truman Plus',
+    name: 'Prestige',
     price: '1 690€',
     cadence: '/ mois',
     bullets: ['5 posts / semaine', 'Ligne éditoriale', 'Stories', '1 journée de tournage'],
-  },
-  {
-    id: 's4',
-    name: 'Modération',
-    price: '100€',
-    cadence: '/ mois',
-    bullets: ['Modération des messages', 'Réponses DM'],
-    compact: true,
-  },
-  {
-    id: 's5',
-    name: 'Gestion commentaires',
-    price: '80€',
-    cadence: '/ mois',
-    bullets: ['Gestion des commentaires', 'Interactions'],
-    compact: true,
+    addon: { name: 'Community Management', price: '900€' },
   },
 ];
+
+export const defaultBanners: Banners = {
+  logos: [
+    { id: 'l1', name: 'Maison Laurel' },
+    { id: 'l2', name: 'ORSO' },
+    { id: 'l3', name: 'STUDIO VOLT' },
+    { id: 'l4', name: 'Impact Media' },
+    { id: 'l5', name: 'BLOOM' },
+    { id: 'l6', name: 'Altéa' },
+    { id: 'l7', name: 'ATELIER 33' },
+    { id: 'l8', name: 'Noir & Sel' },
+    { id: 'l9', name: 'KAPSULE' },
+    { id: 'l10', name: 'Horizon Co.' },
+    { id: 'l11', name: 'NORD/SUD' },
+    { id: 'l12', name: 'Soft Lab' },
+  ],
+  slogans: [
+    'Un fond qui pense, une forme qui touche',
+    "Pas d'effets sans propos",
+    'Créer · Penser · Performer',
+    "L'œil qui pique, le propos qui marque",
+    'On écoute avant de produire',
+  ],
+};

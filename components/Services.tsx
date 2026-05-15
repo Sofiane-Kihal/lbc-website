@@ -28,7 +28,7 @@ const services: Service[] = [
     reveal: {
       question: 'Un audit, à quoi ça sert ?',
       answer:
-        "Un audit marketing social media sert à analyser en profondeur la présence d'une marque sur les réseaux sociaux afin d'évaluer ce qui fonctionne et ce qui doit être amélioré. Il permet d'examiner les performances des contenus (engagement, portée, croissance), la cohérence de la stratégie, le positionnement face aux concurrents et l'adéquation avec la cible visée. L'objectif est d'identifier des opportunités d'optimisation, corriger les points faibles et ajuster la stratégie pour gagner en visibilité, en efficacité et en retour sur investissement.",
+        "Un audit, c'est d'abord prendre le temps de regarder. On lit en profondeur ce que vous publiez aujourd'hui : ce qui parle, ce qui passe à côté, ce qui mérite d'être tenu, ce qui peut être abandonné. On examine les performances (engagement, portée, croissance), la cohérence du propos, le positionnement face aux concurrents et l'adéquation avec votre cible. À la sortie : des opportunités d'optimisation, des points faibles corrigés, une stratégie ajustée — et surtout, une idée précise de ce qu'on veut dire et à qui.",
     },
   },
   {
@@ -45,7 +45,7 @@ const services: Service[] = [
     reveal: {
       question: 'Une stratégie, à quoi ça sert ?',
       answer:
-        "Une stratégie social media consiste à planifier et organiser l'ensemble des actions menées sur les réseaux sociaux afin d'atteindre des objectifs précis (visibilité, engagement, conversion). Elle définit les cibles, les messages, les plateformes à privilégier, le type de contenus à produire et le calendrier de publication, tout en s'appuyant sur l'analyse des performances pour optimiser en continu les résultats.\n\nUne stratégie de communication digitale 360° est une approche globale qui vise à coordonner tous les canaux numériques (réseaux sociaux, site web, email, publicité en ligne, référencement, etc.) pour offrir une expérience cohérente et impactante à l'utilisateur. Elle permet de diffuser un message uniforme sur l'ensemble des points de contact, d'optimiser la visibilité de la marque et de maximiser les performances en combinant différents leviers digitaux de manière complémentaire.",
+        "Une stratégie social media, c'est d'abord choisir ce qu'on veut dire — et à qui. On planifie l'ensemble des actions sur les réseaux sociaux pour atteindre des objectifs précis (visibilité, engagement, conversion), oui, mais on commence par un propos clair, des cibles incarnées, des messages qui valent la peine d'être lus. On s'appuie ensuite sur l'analyse des performances pour ajuster en continu — la stratégie n'est jamais figée, elle écoute.\n\nUne stratégie 360° pousse la cohérence plus loin : tous les canaux numériques (réseaux sociaux, site web, email, publicité, référencement) parlent d'une seule voix. Un message uniforme, une présence partout, des leviers qui se renforcent au lieu de se contredire — et une marque qui prend de l'épaisseur, partout où on la croise.",
     },
   },
   {
@@ -102,7 +102,7 @@ function ServiceCard({
       transition={{ ...SOFT_SPRING, delay: idx * 0.05 }}
       whileHover={{ y: -6 }}
       className={cn(
-        'card-soft p-7 md:p-8 group hover:shadow-[0_4px_8px_rgba(93,110,244,0.08),0_24px_60px_rgba(93,110,244,0.18)] transition-shadow duration-500 relative overflow-hidden',
+        'card-pop p-7 md:p-8 group hover:shadow-[0_4px_8px_rgba(1,1,1,0.08),0_28px_70px_rgba(1,1,1,0.28)] transition-shadow duration-500 relative overflow-hidden',
         spanClass
       )}
     >
@@ -177,23 +177,19 @@ function ServiceCard({
 
 export default function Services() {
   return (
-    <section id="services" className="section-pad relative bg-cream overflow-hidden">
-      <DriftingBlobs variant="cream" />
+    <section id="services" className="section-pad relative overflow-hidden">
+      <DriftingBlobs variant="indigo" />
       <div className="container-wide relative">
         <Reveal>
           <div className="max-w-2xl mb-14">
-            <div className="eyebrow text-sage">
-              <span className="eyebrow-num">03</span>
-              <span className="eyebrow-rule" />
-              <span className="eyebrow-label">Méthode</span>
-            </div>
-            <h2 className="font-display mt-4 text-4xl md:text-6xl text-sage leading-[1.05]">
+            <h2 className="font-display text-4xl md:text-6xl text-cream leading-[1.05]">
               Ce que nous faisons{' '}
-              <span className="italic text-moss-dark">pour vous</span>
+              <span className="italic text-accent">pour vous</span>
             </h2>
-            <p className="mt-5 text-sage/70 text-lg">
-              Cinq métiers, un seul fil rouge : votre objectif business. On ne saute
-              jamais une étape — surtout pas la stratégie.
+            <p className="mt-5 text-cream/80 text-lg">
+              Cinq métiers, un seul fil rouge : un propos juste, un objectif clair.
+              On ne saute jamais une étape — surtout pas celle où l'on prend le temps
+              de penser.
             </p>
           </div>
         </Reveal>

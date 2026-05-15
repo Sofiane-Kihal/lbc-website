@@ -204,29 +204,59 @@ export default function PricingEditor({ initial }: { initial: PricingGroup[] }) 
                         />
                       </Field>
                       <Field
-                        label="Niveaux / variantes (optionnel — un par ligne, format : Label | Prix)"
+                        label="Niveaux / variantes (optionnel — un par ligne, format : Label | Prix | Description | Bullets séparés par ;)"
                         className="md:col-span-2"
                       >
                         <textarea
-                          rows={3}
+                          rows={5}
                           className="input-base resize-y font-mono text-sm"
                           placeholder={
-                            '1 canal | 390€\n2 canaux | 590€\n3 canaux | 690€'
+                            '1 canal | 990€ | Social Media Strat | Audit;Persona;Stratégie;Calendrier éditorial;Plan 3 à 6 mois\n3 canaux | 1990€ | Social Media Strat +\nPremium | 2990€ | Social Media Strat Premium | Audit;Persona;Stratégie;Site vitrine;SEO'
                           }
                           value={(it.tiers || [])
-                            .map((t) => `${t.label} | ${t.price}`)
+                            .map((t) => {
+                              const parts = [t.label, t.price];
+                              if (t.description || (t.bullets && t.bullets.length > 0)) {
+                                parts.push(t.description || '');
+                              }
+                              if (t.bullets && t.bullets.length > 0) {
+                                parts.push(t.bullets.join(';'));
+                              }
+                              return parts.join(' | ');
+                            })
                             .join('\n')}
                           onChange={(e) => {
                             const parsed = e.target.value
                               .split('\n')
                               .map((line) => {
-                                const [label, price] = line.split('|').map((x) =>
-                                  x.trim()
-                                );
-                                return label && price ? { label, price } : null;
+                                const parts = line.split('|').map((x) => x.trim());
+                                const [label, price, description, bulletsRaw] = parts;
+                                if (!label || !price) return null;
+                                const bullets = bulletsRaw
+                                  ? bulletsRaw
+                                      .split(';')
+                                      .map((b) => b.trim())
+                                      .filter(Boolean)
+                                  : undefined;
+                                const out: {
+                                  label: string;
+                                  price: string;
+                                  description?: string;
+                                  bullets?: string[];
+                                } = { label, price };
+                                if (description) out.description = description;
+                                if (bullets && bullets.length > 0) out.bullets = bullets;
+                                return out;
                               })
-                              .filter((x): x is { label: string; price: string } =>
-                                x !== null
+                              .filter(
+                                (
+                                  x
+                                ): x is {
+                                  label: string;
+                                  price: string;
+                                  description?: string;
+                                  bullets?: string[];
+                                } => x !== null
                               );
                             updateItem(g.id, it.id, {
                               tiers: parsed.length > 0 ? parsed : undefined,
@@ -234,8 +264,14 @@ export default function PricingEditor({ initial }: { initial: PricingGroup[] }) 
                           }}
                         />
                         <span className="block text-xs text-sage/60 mt-1.5">
-                          Quand renseigné, la carte affiche un sélecteur de niveau et le
-                          prix s'anime entre les variantes.
+                          Quand renseigné, la carte affiche un sélecteur de niveau. La
+                          description (3<sup>e</sup> colonne) apparaît en italique sous
+                          le sélecteur. Les bullets (4<sup>e</sup> colonne, séparés par
+                          <code className="bg-sage/8 px-1 rounded mx-0.5">;</code>)
+                          remplacent ceux de l'item pour ce tier — utile quand le
+                          contenu diffère (ex. tier Premium qui ajoute « Site vitrine »
+                          et « SEO »). Sans 4<sup>e</sup> colonne, le tier hérite des
+                          bullets de l'item.
                         </span>
                       </Field>
                       <label className="md:col-span-2 flex items-start gap-3 mt-1 cursor-pointer">

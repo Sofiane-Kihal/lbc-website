@@ -13,43 +13,31 @@ const stats: Array<{ value: number; suffix: string; label: string }> = [
 
 export default function Contact({ onOpenIntake }: { onOpenIntake: () => void }) {
   return (
-    <section id="contact" className="section-pad relative bg-moss text-cream overflow-hidden">
+    <section id="contact" className="section-pad relative text-cream overflow-hidden">
       <div className="absolute inset-0 grain pointer-events-none" />
 
-      {/* Animated halos — slow opposing drift */}
+      {/* Animated halos — slow opposing drift, cream/accent on sage */}
       <motion.div
         aria-hidden
         animate={{ x: [0, 40, 0], y: [0, -30, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-        className="pointer-events-none absolute -top-32 -right-32 h-[480px] w-[480px] rounded-full bg-sage/40 blur-[120px] motion-reduce:!animate-none"
+        className="pointer-events-none absolute -top-32 -right-32 h-[480px] w-[480px] rounded-full bg-accent/20 blur-[120px] motion-reduce:!animate-none"
       />
       <motion.div
         aria-hidden
         animate={{ x: [0, -40, 0], y: [0, 30, 0] }}
         transition={{ duration: 26, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        className="pointer-events-none absolute -bottom-32 -left-32 h-[480px] w-[480px] rounded-full bg-sage/25 blur-[120px] motion-reduce:!animate-none"
+        className="pointer-events-none absolute -bottom-32 -left-32 h-[480px] w-[480px] rounded-full bg-cream/10 blur-[120px] motion-reduce:!animate-none"
       />
 
       <div className="container-narrow relative">
         <div className="text-center">
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={SOFT_SPRING}
-            className="eyebrow text-cream"
-          >
-            <span className="eyebrow-num">06</span>
-            <span className="eyebrow-rule" />
-            <span className="eyebrow-label">Contact</span>
-          </motion.div>
-
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={SOFT_SPRING}
-            className="font-display mt-6 text-5xl md:text-7xl lg:text-8xl leading-[0.95]"
+            className="font-display text-5xl md:text-7xl lg:text-8xl leading-[0.95]"
           >
             Parlons de votre{' '}
             <span className="italic text-accent relative inline-block">
@@ -74,7 +62,8 @@ export default function Contact({ onOpenIntake }: { onOpenIntake: () => void }) 
           >
             Quinze questions, cinq minutes. À la carte, en abonnement, ou complètement
             sur-mesure — on construit ensemble la formule qui colle vraiment à votre
-            objectif et votre budget. Pas de copier-coller.
+            propos, à votre objectif et à votre budget. On écoute avant de proposer,
+            jamais l'inverse.
           </motion.p>
 
           <motion.div
@@ -106,11 +95,11 @@ export default function Contact({ onOpenIntake }: { onOpenIntake: () => void }) 
             <motion.a
               whileHover={{ y: -2 }}
               transition={SOFT_SPRING}
-              href="mailto:hello@labandecreative.com"
+              href="mailto:contact@labandecreative.fr"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-cream/30 px-8 py-4 font-medium hover:bg-cream hover:text-sage transition-colors"
             >
               <Mail size={18} />
-              hello@labandecreative.com
+              contact@labandecreative.fr
             </motion.a>
           </motion.div>
         </div>

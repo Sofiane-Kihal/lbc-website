@@ -20,7 +20,7 @@ type ChoiceQuestion = {
   hint?: string;
   // Pedagogical insight shown below the question
   insight?: string;
-  options: { value: string; label: string; description?: string }[];
+  options: { value: string; label: string; description?: string; allowComment?: boolean }[];
 };
 
 type ContactQuestion = {
@@ -223,7 +223,7 @@ const questions: Question[] = [
       { value: 'reseaux', label: 'Réseaux sociaux' },
       { value: 'google', label: 'Recherche Google' },
       { value: 'evenement', label: 'Évènement' },
-      { value: 'autre', label: 'Autre' },
+      { value: 'autre', label: 'Autre', allowComment: true },
     ],
   },
   {
@@ -235,6 +235,8 @@ const questions: Question[] = [
 ];
 
 type Answers = Record<string, any>;
+
+const DRAFT_KEY = 'lbc-intake-draft';
 
 export default function IntakeModal({
   open,
@@ -256,16 +258,47 @@ export default function IntakeModal({
     [step, total, done]
   );
 
-  // Reset when reopened
+  // On open: try to resume from a saved draft so that a misclick on the
+  // backdrop doesn't wipe the user's progress. Drafts are cleared on
+  // successful submit (see handleSubmit).
   useEffect(() => {
-    if (open) {
-      setStep(0);
-      setAnswers({});
-      setSubmitting(false);
-      setDone(false);
-      setError(null);
+    if (!open) return;
+    setSubmitting(false);
+    setDone(false);
+    setError(null);
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        const savedAnswers =
+          parsed && typeof parsed.answers === 'object' && parsed.answers !== null
+            ? parsed.answers
+            : {};
+        const savedStep =
+          typeof parsed?.step === 'number'
+            ? Math.min(Math.max(0, parsed.step), total - 1)
+            : 0;
+        setAnswers(savedAnswers);
+        setStep(savedStep);
+        return;
+      }
+    } catch {
+      // Corrupted draft or storage unavailable — fall through to fresh start.
     }
-  }, [open]);
+    setStep(0);
+    setAnswers({});
+  }, [open, total]);
+
+  // Persist progress on every change while the modal is open and not yet
+  // submitted — so closing (intentional or by mistake) keeps the state.
+  useEffect(() => {
+    if (!open || done) return;
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ step, answers }));
+    } catch {
+      // Quota / private mode — silently ignore, modal still works in-memory.
+    }
+  }, [open, done, step, answers]);
 
   // Lock body scroll
   useEffect(() => {
@@ -314,6 +347,9 @@ export default function IntakeModal({
       });
       if (!res.ok) throw new Error('Erreur lors de l\'envoi');
       setDone(true);
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch {}
     } catch (e: any) {
       setError(e?.message || 'Erreur inconnue');
     } finally {
@@ -477,6 +513,37 @@ export default function IntakeModal({
                             </button>
                           );
                         })}
+                        <AnimatePresence initial={false}>
+                          {(() => {
+                            const selected = q.options.find(
+                              (o) => o.value === answers[q.id]
+                            );
+                            if (!selected?.allowComment) return null;
+                            const commentKey = `${q.id}_comment`;
+                            return (
+                              <motion.label
+                                key="comment"
+                                initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                                animate={{ opacity: 1, height: 'auto', marginTop: 8 }}
+                                exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                                transition={{ duration: 0.25 }}
+                                className="block overflow-hidden"
+                              >
+                                <span className="block text-xs font-medium text-sage/70 mb-1.5 mt-2">
+                                  Précisez (facultatif)
+                                </span>
+                                <input
+                                  type="text"
+                                  autoFocus
+                                  value={(answers[commentKey] as string) || ''}
+                                  onChange={(e) => setAnswer(commentKey, e.target.value)}
+                                  placeholder="Dites-nous en plus…"
+                                  className="input-base"
+                                />
+                              </motion.label>
+                            );
+                          })()}
+                        </AnimatePresence>
                       </div>
                     )}
 

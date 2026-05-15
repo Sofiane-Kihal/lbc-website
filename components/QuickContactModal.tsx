@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowRight, Loader2, X } from 'lucide-react';
+import { ArrowRight, Check, Loader2, Plus, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+type PresetAddon = { id: string; name: string; price: string; cadence: string };
 
 /**
  * Lightweight contact form for "I already chose this offer, contact me".
@@ -18,7 +20,14 @@ export default function QuickContactModal({
 }: {
   open: boolean;
   onClose: () => void;
-  preset: { kind: 'subscription'; name: string; price?: string } | null;
+  preset: {
+    kind: 'subscription';
+    id: string;
+    name: string;
+    price?: string;
+    compact?: boolean;
+    addon?: PresetAddon;
+  } | null;
 }) {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -31,9 +40,15 @@ export default function QuickContactModal({
     company: '',
     message: '',
   });
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // The chosen formula may carry its own optional add-on (e.g. CM at a
+  // formula-specific price). Compact presets don't carry add-ons themselves.
+  const availableAddons: PresetAddon[] =
+    preset && !preset.compact && preset.addon ? [preset.addon] : [];
 
   // Reset on (re)open
   useEffect(() => {
@@ -46,6 +61,7 @@ export default function QuickContactModal({
         company: '',
         message: '',
       });
+      setSelectedAddons([]);
       setSubmitting(false);
       setDone(false);
       setError(null);
@@ -79,12 +95,19 @@ export default function QuickContactModal({
     setSubmitting(true);
     setError(null);
     try {
+      const chosenAddons = availableAddons
+        .filter((a) => selectedAddons.includes(a.id))
+        .map((a) => ({
+          id: a.id,
+          name: a.name,
+          price: `${a.price} HT ${a.cadence}`,
+        }));
       const res = await fetch('/api/intake', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           source: 'quick-contact',
-          preset,
+          preset: { ...preset, addons: chosenAddons },
           answers: { contact: form },
           submittedAt: new Date().toISOString(),
         }),
@@ -146,6 +169,32 @@ export default function QuickContactModal({
               {preset?.price && (
                 <p className="mt-1 text-cream/75 text-sm">{preset.price}</p>
               )}
+              <AnimatePresence initial={false}>
+                {selectedAddons.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                    animate={{ opacity: 1, height: 'auto', marginTop: 12 }}
+                    exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                    transition={{ duration: 0.25 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="flex flex-wrap gap-1.5 pt-3 border-t border-cream/15">
+                      {availableAddons
+                        .filter((a) => selectedAddons.includes(a.id))
+                        .map((a) => (
+                          <span
+                            key={a.id}
+                            className="inline-flex items-center gap-1.5 rounded-full bg-cream/10 px-2.5 py-1 text-[11px] text-cream/85"
+                          >
+                            <span className="h-1 w-1 rounded-full bg-accent" />
+                            {a.name}
+                            <span className="text-cream/55">+{a.price}</span>
+                          </span>
+                        ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {done ? (
@@ -177,6 +226,75 @@ export default function QuickContactModal({
                   Vos coordonnées — on revient vers vous sous 48h avec une proposition
                   ajustée.
                 </p>
+
+                {availableAddons.length > 0 && (
+                  <div className="mb-6 rounded-2xl border border-sage/15 bg-sage/[0.03] p-4">
+                    <div className="flex items-baseline justify-between gap-3 mb-3">
+                      <h4 className="text-sm font-semibold text-sage">
+                        Ajouter en supplément
+                      </h4>
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.28em] text-sage/50">
+                        Facultatif
+                      </span>
+                    </div>
+                    <ul className="grid gap-2">
+                      {availableAddons.map((a) => {
+                        const sel = selectedAddons.includes(a.id);
+                        return (
+                          <li key={a.id}>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setSelectedAddons((prev) =>
+                                  sel
+                                    ? prev.filter((id) => id !== a.id)
+                                    : [...prev, a.id]
+                                )
+                              }
+                              className={cn(
+                                'group w-full flex items-center gap-3 text-left rounded-xl border px-3.5 py-2.5 transition-all',
+                                sel
+                                  ? 'border-accent/50 bg-accent/[0.08]'
+                                  : 'border-sage/15 bg-cream hover:border-sage/30'
+                              )}
+                            >
+                              <span
+                                className={cn(
+                                  'grid h-5 w-5 place-items-center rounded-full border flex-shrink-0 transition-colors',
+                                  sel
+                                    ? 'bg-accent border-accent text-cream'
+                                    : 'border-sage/30 text-sage/40 group-hover:border-sage/50'
+                                )}
+                              >
+                                {sel ? (
+                                  <Check size={12} strokeWidth={3} />
+                                ) : (
+                                  <Plus size={12} strokeWidth={2.5} />
+                                )}
+                              </span>
+                              <span className="flex-1 min-w-0">
+                                <span className="block font-medium text-sage text-sm">
+                                  {a.name}
+                                </span>
+                                <span className="block text-[11px] text-sage/55 mt-0.5">
+                                  On gère vos stories, vos commentaires, vos DM. De
+                                  A à Z.
+                                </span>
+                              </span>
+                              <span className="font-display text-sage text-base whitespace-nowrap flex-shrink-0">
+                                +{a.price}
+                                <span className="text-[10px] text-sage/50 ml-1">
+                                  HT {a.cadence}
+                                </span>
+                              </span>
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                )}
+
                 <div className="grid gap-3 sm:grid-cols-2">
                   <Field label="Prénom *">
                     <input

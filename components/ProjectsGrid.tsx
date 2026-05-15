@@ -21,7 +21,7 @@ function coverStyle(cover: string): React.CSSProperties {
   if (cover.startsWith('gradient:')) {
     return { backgroundImage: gradients[cover] || gradients['gradient:sage→moss'] };
   }
-  if (cover.startsWith('http')) {
+  if (cover.startsWith('http') || cover.startsWith('/')) {
     return {
       backgroundImage: `url(${cover})`,
       backgroundSize: 'cover',
@@ -33,18 +33,13 @@ function coverStyle(cover: string): React.CSSProperties {
 
 export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   return (
-    <section id="projets" className="section-pad relative overflow-hidden">
+    <section id="projets" className="section-pad relative overflow-hidden bg-cream text-sage">
       <DriftingBlobs variant="cream" />
       <DotsPattern variant="sage" className="opacity-[0.08]" />
       <div className="container-wide relative">
         <Reveal>
           <div className="mb-14">
-            <div className="eyebrow text-sage">
-              <span className="eyebrow-num">02</span>
-              <span className="eyebrow-rule" />
-              <span className="eyebrow-label">Réalisations</span>
-            </div>
-            <h2 className="font-display mt-4 text-4xl md:text-6xl text-sage leading-[1.05]">
+            <h2 className="font-display text-4xl md:text-6xl text-sage leading-[1.05]">
               Nos projets <span className="italic text-moss-dark">récents</span>
             </h2>
           </div>
@@ -64,6 +59,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                   href={`/projets/${p.slug}`}
                   className="group block relative aspect-[4/5] rounded-3xl overflow-hidden"
                   style={coverStyle(p.cover)}
+                  aria-label={p.coverAlt || `${p.title} — ${p.categories.join(', ')}`}
                 >
                   {/* Image zoom on hover (via inner div) */}
                   <motion.div
@@ -77,12 +73,6 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
                   {/* Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-sage/85 via-sage/20 to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
-
-                  {/* Sheen sweep */}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/25 to-transparent translate-x-[-200%] group-hover:translate-x-[450%] transition-transform duration-[1400ms] ease-out motion-reduce:!hidden"
-                  />
 
                   {/* Floating tag */}
                   <div className="absolute top-5 left-5 inline-flex items-center gap-1.5 rounded-full bg-cream/85 backdrop-blur-sm px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-sage z-10">
@@ -100,7 +90,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                   {/* Title — slides up softly on hover */}
                   <div className="absolute bottom-0 left-0 right-0 p-6 text-cream translate-y-3 group-hover:translate-y-0 transition-transform duration-700 ease-out z-10">
                     <div className="text-xs uppercase tracking-widest opacity-80 mb-2">
-                      {p.category}
+                      {p.categories.join(' · ')}
                     </div>
                     <h3 className="font-display text-3xl md:text-4xl leading-tight">
                       {p.title}

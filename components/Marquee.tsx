@@ -15,6 +15,8 @@ export default function Marquee({
   variant?: 'indigo' | 'noir' | 'cream';
   speed?: number;
 }) {
+  if (!items || items.length === 0) return null;
+
   const palette =
     variant === 'noir'
       ? 'bg-moss text-cream border-y border-cream/10'
@@ -34,7 +36,7 @@ export default function Marquee({
     <div
       aria-hidden
       className={cn(
-        'relative overflow-hidden py-5 select-none',
+        'relative overflow-hidden py-2.5 select-none',
         palette
       )}
     >
@@ -45,11 +47,11 @@ export default function Marquee({
         {repeated.map((label, i) => (
           <span
             key={i}
-            className="flex items-center gap-6 px-6 font-display text-3xl md:text-4xl lg:text-5xl tracking-tight whitespace-nowrap"
+            className="flex items-center gap-4 px-5 font-display text-lg md:text-xl lg:text-2xl tracking-tight whitespace-nowrap"
           >
             <span>{label}</span>
             <span
-              className={cn('inline-block h-1.5 w-1.5 rounded-full flex-shrink-0', dotColor)}
+              className={cn('inline-block h-1 w-1 rounded-full flex-shrink-0', dotColor)}
             />
           </span>
         ))}
