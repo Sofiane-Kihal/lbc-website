@@ -90,15 +90,15 @@ function Typewriter({
   }, [text, phase, idx, phrases, typeMs, deleteMs, holdMs, gapMs, prefersReduced]);
 
   if (prefersReduced) {
-    return <span className="italic">{phrases[0]}</span>;
+    return <span className="italic text-glow-accent">{phrases[0]}</span>;
   }
 
   return (
-    <span className="italic">
+    <span className="italic text-glow-accent">
       {text}
       <span
         aria-hidden
-        className="cursor-blink inline-block align-baseline w-[2px] md:w-[3px] h-[0.78em] bg-accent ml-[0.06em] translate-y-[0.08em]"
+        className="cursor-blink inline-block align-baseline w-[2px] md:w-[3px] h-[0.78em] bg-accent ml-[0.06em] translate-y-[0.08em] rounded-[1px]"
       />
     </span>
   );
@@ -149,17 +149,7 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
             </motion.div>
 
             <h1 className="font-display mt-6 text-[44px] md:text-[64px] lg:text-[84px] leading-[0.95] tracking-tight text-cream">
-              <WordReveal text="L'agence de communication" delay={0.05} />{' '}
-              <span className="inline-block overflow-hidden align-baseline pb-[0.15em]">
-                <motion.span
-                  initial={{ y: 60, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ ...SOFT_SPRING, delay: 0.25 }}
-                  className="inline-block gradient-text"
-                >
-                  360°
-                </motion.span>
-              </span>
+              <WordReveal text="L'agence de communication" delay={0.05} />
               <br />
               <motion.span
                 initial={{ opacity: 0, y: 30 }}
@@ -167,7 +157,7 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
                 transition={{ ...SOFT_SPRING, delay: 0.4 }}
                 className="font-normal text-accent inline-block"
               >
-                <Typewriter phrases={TAGLINE_PHRASES} startDelayMs={950} />
+                <Typewriter phrases={TAGLINE_PHRASES} startDelayMs={650} />
               </motion.span>
             </h1>
 

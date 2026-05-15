@@ -64,7 +64,7 @@ export default function HomeShell({
       <Navigation onOpenIntake={openIntake} />
       <main>
         <Hero onOpenIntake={openIntake} />
-        <LogoMarquee variant="indigo" logos={banners.logos} />
+        <LogoMarquee variant="noir" logos={banners.logos} />
         <ProjectsGrid projects={projects} />
         <Services />
         <Marquee variant="noir" speed={50} items={banners.slogans} />

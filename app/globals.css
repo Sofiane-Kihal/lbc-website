@@ -125,16 +125,47 @@ body {
   100% { transform: translateX(-50%); }
 }
 
-/* Typewriter cursor — hard step blink (terminal feel, no fade) */
+/* Typewriter cursor — hard step blink (terminal feel, no fade) + accent glow */
 @keyframes cursor-blink {
   0%, 49% { opacity: 1; }
   50%, 100% { opacity: 0; }
 }
 .cursor-blink {
   animation: cursor-blink 1s steps(1) infinite;
+  box-shadow:
+    0 0 8px rgba(255, 107, 53, 0.75),
+    0 0 16px rgba(255, 107, 53, 0.45),
+    0 0 28px rgba(255, 107, 53, 0.25);
 }
 @media (prefers-reduced-motion: reduce) {
   .cursor-blink { animation: none; opacity: 1; }
+}
+
+/* Typewriter typed text — soft accent halo + slow breathing pulse */
+@keyframes typewriter-glow {
+  0%, 100% {
+    text-shadow:
+      0 0 12px rgba(255, 107, 53, 0.55),
+      0 0 26px rgba(255, 107, 53, 0.30),
+      0 0 48px rgba(255, 107, 53, 0.14);
+  }
+  50% {
+    text-shadow:
+      0 0 18px rgba(255, 107, 53, 0.70),
+      0 0 34px rgba(255, 107, 53, 0.42),
+      0 0 60px rgba(255, 107, 53, 0.20);
+  }
+}
+.text-glow-accent {
+  animation: typewriter-glow 3.2s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .text-glow-accent {
+    animation: none;
+    text-shadow:
+      0 0 12px rgba(255, 107, 53, 0.45),
+      0 0 24px rgba(255, 107, 53, 0.22);
+  }
 }
 
 /* Scrollbar */
