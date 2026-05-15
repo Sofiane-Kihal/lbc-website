@@ -2,8 +2,9 @@
 
 import { useState } from 'react';
 import { Plus, Trash2, Save, Loader2, Check, ChevronDown, ChevronRight } from 'lucide-react';
-import type { PricingGroup, PricingItem } from '@/lib/defaults';
+import type { PricingGroup, PricingItem, PricingTier } from '@/lib/defaults';
 import { cn } from '@/lib/utils';
+import { MultilineListInput } from '../inputs';
 
 function blankItem(): PricingItem {
   return {
@@ -189,79 +190,19 @@ export default function PricingEditor({ initial }: { initial: PricingGroup[] }) 
                         />
                       </Field>
                       <Field label="Bullets (un par ligne)" className="md:col-span-2">
-                        <textarea
+                        <MultilineListInput
                           rows={4}
-                          className="input-base resize-y"
-                          value={it.bullets.join('\n')}
-                          onChange={(e) =>
-                            updateItem(g.id, it.id, {
-                              bullets: e.target.value
-                                .split('\n')
-                                .map((s) => s.trim())
-                                .filter(Boolean),
-                            })
-                          }
+                          value={it.bullets}
+                          onChange={(bullets) => updateItem(g.id, it.id, { bullets })}
                         />
                       </Field>
                       <Field
                         label="Niveaux / variantes (optionnel — un par ligne, format : Label | Prix | Description | Bullets séparés par ;)"
                         className="md:col-span-2"
                       >
-                        <textarea
-                          rows={5}
-                          className="input-base resize-y font-mono text-sm"
-                          placeholder={
-                            '1 canal | 990€ | Social Media Strat | Audit;Persona;Stratégie;Calendrier éditorial;Plan 3 à 6 mois\n3 canaux | 1990€ | Social Media Strat +\nPremium | 2990€ | Social Media Strat Premium | Audit;Persona;Stratégie;Site vitrine;SEO'
-                          }
-                          value={(it.tiers || [])
-                            .map((t) => {
-                              const parts = [t.label, t.price];
-                              if (t.description || (t.bullets && t.bullets.length > 0)) {
-                                parts.push(t.description || '');
-                              }
-                              if (t.bullets && t.bullets.length > 0) {
-                                parts.push(t.bullets.join(';'));
-                              }
-                              return parts.join(' | ');
-                            })
-                            .join('\n')}
-                          onChange={(e) => {
-                            const parsed = e.target.value
-                              .split('\n')
-                              .map((line) => {
-                                const parts = line.split('|').map((x) => x.trim());
-                                const [label, price, description, bulletsRaw] = parts;
-                                if (!label || !price) return null;
-                                const bullets = bulletsRaw
-                                  ? bulletsRaw
-                                      .split(';')
-                                      .map((b) => b.trim())
-                                      .filter(Boolean)
-                                  : undefined;
-                                const out: {
-                                  label: string;
-                                  price: string;
-                                  description?: string;
-                                  bullets?: string[];
-                                } = { label, price };
-                                if (description) out.description = description;
-                                if (bullets && bullets.length > 0) out.bullets = bullets;
-                                return out;
-                              })
-                              .filter(
-                                (
-                                  x
-                                ): x is {
-                                  label: string;
-                                  price: string;
-                                  description?: string;
-                                  bullets?: string[];
-                                } => x !== null
-                              );
-                            updateItem(g.id, it.id, {
-                              tiers: parsed.length > 0 ? parsed : undefined,
-                            });
-                          }}
+                        <TiersInput
+                          value={it.tiers}
+                          onChange={(tiers) => updateItem(g.id, it.id, { tiers })}
                         />
                         <span className="block text-xs text-sage/60 mt-1.5">
                           Quand renseigné, la carte affiche un sélecteur de niveau. La
@@ -336,5 +277,63 @@ function Field({
       <span className="block text-xs font-medium text-sage/70 mb-1.5">{label}</span>
       {children}
     </label>
+  );
+}
+
+function serializeTiers(tiers: PricingTier[] | undefined): string {
+  return (tiers || [])
+    .map((t) => {
+      const parts = [t.label, t.price];
+      if (t.description || (t.bullets && t.bullets.length > 0)) {
+        parts.push(t.description || '');
+      }
+      if (t.bullets && t.bullets.length > 0) {
+        parts.push(t.bullets.join(';'));
+      }
+      return parts.join(' | ');
+    })
+    .join('\n');
+}
+
+function parseTiers(text: string): PricingTier[] | undefined {
+  const parsed = text
+    .split('\n')
+    .map((line) => {
+      const parts = line.split('|').map((x) => x.trim());
+      const [label, price, description, bulletsRaw] = parts;
+      if (!label || !price) return null;
+      const bullets = bulletsRaw
+        ? bulletsRaw.split(';').map((b) => b.trim()).filter(Boolean)
+        : undefined;
+      const out: PricingTier = { label, price };
+      if (description) out.description = description;
+      if (bullets && bullets.length > 0) out.bullets = bullets;
+      return out;
+    })
+    .filter((x): x is PricingTier => x !== null);
+  return parsed.length > 0 ? parsed : undefined;
+}
+
+function TiersInput({
+  value,
+  onChange,
+}: {
+  value: PricingTier[] | undefined;
+  onChange: (tiers: PricingTier[] | undefined) => void;
+}) {
+  const [raw, setRaw] = useState(() => serializeTiers(value));
+  return (
+    <textarea
+      rows={5}
+      className="input-base resize-y font-mono text-sm"
+      placeholder={
+        '1 canal | 990€ | Social Media Strat | Audit;Persona;Stratégie;Calendrier éditorial;Plan 3 à 6 mois\n3 canaux | 1990€ | Social Media Strat +\nPremium | 2990€ | Social Media Strat Premium | Audit;Persona;Stratégie;Site vitrine;SEO'
+      }
+      value={raw}
+      onChange={(e) => {
+        setRaw(e.target.value);
+        onChange(parseTiers(e.target.value));
+      }}
+    />
   );
 }

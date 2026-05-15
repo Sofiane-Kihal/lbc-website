@@ -15,6 +15,7 @@ import {
 import type { Project } from '@/lib/defaults';
 import { slugify } from '@/lib/utils';
 import { cn } from '@/lib/utils';
+import { SlugInput, ListInput } from '../inputs';
 
 const COVER_PRESETS = [
   'gradient:sage→moss',
@@ -115,10 +116,9 @@ export default function ProjectsEditor({ initial }: { initial: Project[] }) {
   }
 
   async function save() {
-    // Auto-fill slugs.
     const normalized = items.map((p) => ({
       ...p,
-      slug: p.slug || slugify(p.title || p.id),
+      slug: slugify(p.slug || p.title || p.id),
     }));
     setSaving(true);
     setError(null);
@@ -202,13 +202,10 @@ export default function ProjectsEditor({ initial }: { initial: Project[] }) {
                   />
                 </Field>
                 <Field label="Slug (URL)">
-                  <input
-                    className="input-base"
-                    placeholder="auto à partir du titre"
+                  <SlugInput
                     value={p.slug}
-                    onChange={(e) =>
-                      update(p.id, { slug: slugify(e.target.value) })
-                    }
+                    onChange={(slug) => update(p.id, { slug })}
+                    placeholder="auto à partir du titre"
                   />
                 </Field>
                 <Field label="Client">
@@ -219,18 +216,10 @@ export default function ProjectsEditor({ initial }: { initial: Project[] }) {
                   />
                 </Field>
                 <Field label="Catégories (séparées par des virgules)">
-                  <input
-                    className="input-base"
-                    value={p.categories.join(', ')}
+                  <ListInput
+                    value={p.categories}
+                    onChange={(categories) => update(p.id, { categories })}
                     placeholder="Ex. : Stratégie 360°, Film de marque"
-                    onChange={(e) =>
-                      update(p.id, {
-                        categories: e.target.value
-                          .split(',')
-                          .map((s) => s.trim())
-                          .filter(Boolean),
-                      })
-                    }
                   />
                 </Field>
                 <Field label="Année">
@@ -257,17 +246,9 @@ export default function ProjectsEditor({ initial }: { initial: Project[] }) {
                   />
                 </Field>
                 <Field label="Scope (séparé par des virgules)" className="md:col-span-2">
-                  <input
-                    className="input-base"
-                    value={p.scope.join(', ')}
-                    onChange={(e) =>
-                      update(p.id, {
-                        scope: e.target.value
-                          .split(',')
-                          .map((s) => s.trim())
-                          .filter(Boolean),
-                      })
-                    }
+                  <ListInput
+                    value={p.scope}
+                    onChange={(scope) => update(p.id, { scope })}
                   />
                 </Field>
 

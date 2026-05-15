@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Plus, Trash2, Save, Loader2, Check, Star } from 'lucide-react';
 import type { Subscription } from '@/lib/defaults';
 import { cn } from '@/lib/utils';
+import { MultilineListInput } from '../inputs';
 
 function blank(): Subscription {
   return {
@@ -157,18 +158,10 @@ export default function SubscriptionsEditor({
                 </span>
               </label>
               <Field label="Bullets (un par ligne)">
-                <textarea
+                <MultilineListInput
                   rows={4}
-                  className="input-base resize-y"
-                  value={s.bullets.join('\n')}
-                  onChange={(e) =>
-                    update(s.id, {
-                      bullets: e.target.value
-                        .split('\n')
-                        .map((x) => x.trim())
-                        .filter(Boolean),
-                    })
-                  }
+                  value={s.bullets}
+                  onChange={(bullets) => update(s.id, { bullets })}
                 />
               </Field>
 
