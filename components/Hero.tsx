@@ -90,11 +90,11 @@ function Typewriter({
   }, [text, phase, idx, phrases, typeMs, deleteMs, holdMs, gapMs, prefersReduced]);
 
   if (prefersReduced) {
-    return <span className="italic text-glow-accent">{phrases[0]}</span>;
+    return <span className="italic">{phrases[0]}</span>;
   }
 
   return (
-    <span className="italic text-glow-accent">
+    <span className="italic">
       {text}
       <span
         aria-hidden
