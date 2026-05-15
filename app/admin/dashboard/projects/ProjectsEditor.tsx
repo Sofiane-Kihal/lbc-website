@@ -10,9 +10,11 @@ import {
   Check,
   Upload,
   ImageIcon,
+  Star,
 } from 'lucide-react';
 import type { Project } from '@/lib/defaults';
 import { slugify } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 const COVER_PRESETS = [
   'gradient:sage→moss',
@@ -62,6 +64,16 @@ export default function ProjectsEditor({ initial }: { initial: Project[] }) {
 
   function update(id: string, patch: Partial<Project>) {
     setItems((arr) => arr.map((i) => (i.id === id ? { ...i, ...patch } : i)));
+  }
+
+  // Featured-in-hero is exclusive: enabling one project disables the others.
+  function toggleFeatured(id: string) {
+    setItems((arr) =>
+      arr.map((p) => ({
+        ...p,
+        featured: p.id === id ? !p.featured : false,
+      }))
+    );
   }
 
   async function uploadCover(id: string, file: File) {
@@ -298,13 +310,39 @@ export default function ProjectsEditor({ initial }: { initial: Project[] }) {
                 </div>
               </div>
 
-              <button
-                onClick={() => remove(p.id)}
-                aria-label="Supprimer"
-                className="grid h-9 w-9 place-items-center rounded-full bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
-              >
-                <Trash2 size={14} />
-              </button>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => toggleFeatured(p.id)}
+                  aria-label={
+                    p.featured
+                      ? 'Retirer de la mise en avant du Hero'
+                      : 'Mettre en avant dans le Hero'
+                  }
+                  title={
+                    p.featured
+                      ? 'Retirer de la mise en avant du Hero'
+                      : 'Mettre en avant dans le Hero'
+                  }
+                  className={cn(
+                    'grid h-9 w-9 place-items-center rounded-full transition-colors',
+                    p.featured
+                      ? 'bg-accent text-cream shadow-md shadow-accent/40'
+                      : 'bg-sage/5 text-sage hover:bg-sage/10'
+                  )}
+                >
+                  <Star
+                    size={14}
+                    fill={p.featured ? 'currentColor' : 'none'}
+                  />
+                </button>
+                <button
+                  onClick={() => remove(p.id)}
+                  aria-label="Supprimer"
+                  className="grid h-9 w-9 place-items-center rounded-full bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             </div>
           </article>
         ))}

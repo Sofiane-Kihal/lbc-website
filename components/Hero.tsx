@@ -1,16 +1,42 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import {
+  type MotionValue,
   motion,
   useReducedMotion,
   useScroll,
   useTransform,
 } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Sparkles } from 'lucide-react';
+import type { Project } from '@/lib/defaults';
 import { DriftingBlobs, FloatingParticles } from './BackgroundFx';
 import { SOFT_SPRING } from './Reveal';
 import { Magnetic, TiltCard, WordReveal } from './MotionPrimitives';
+
+const COVER_GRADIENTS: Record<string, string> = {
+  'gradient:sage→moss': 'linear-gradient(135deg, #5d6ef4 0%, #010101 100%)',
+  'gradient:moss→stone': 'linear-gradient(135deg, #010101 0%, #C7C0AE 100%)',
+  'gradient:sage→stone': 'linear-gradient(135deg, #5d6ef4 0%, #C7C0AE 100%)',
+  'gradient:stone→cream': 'linear-gradient(135deg, #C7C0AE 0%, #FAF1E6 100%)',
+  'gradient:moss→sage': 'linear-gradient(135deg, #010101 0%, #5d6ef4 100%)',
+  'gradient:sage→cream': 'linear-gradient(135deg, #5d6ef4 0%, #FAF1E6 100%)',
+};
+
+function coverStyle(cover: string): React.CSSProperties {
+  if (cover.startsWith('gradient:')) {
+    return { backgroundImage: COVER_GRADIENTS[cover] || COVER_GRADIENTS['gradient:sage→moss'] };
+  }
+  if (cover.startsWith('http') || cover.startsWith('/')) {
+    return {
+      backgroundImage: `url(${cover})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    };
+  }
+  return { backgroundImage: COVER_GRADIENTS['gradient:sage→moss'] };
+}
 
 const TAGLINE_PHRASES = [
   'qui performe.',
@@ -104,17 +130,21 @@ function Typewriter({
   );
 }
 
-export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
+export default function Hero({
+  onOpenIntake,
+  featuredProject,
+}: {
+  onOpenIntake: () => void;
+  featuredProject?: Project | null;
+}) {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ['start start', 'end start'],
   });
 
-  // Parallax layers — moved subtly while the hero is on screen.
-  const yCardA = useTransform(scrollYProgress, [0, 1], [0, -120]);
-  const yCardB = useTransform(scrollYProgress, [0, 1], [0, -60]);
-  const yStat = useTransform(scrollYProgress, [0, 1], [0, -180]);
+  // Parallax — single subtle lift on the featured card as the hero scrolls.
+  const cardY = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const opacityFade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
@@ -225,110 +255,15 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
             </motion.div>
           </div>
 
-          {/* Right — visual collage */}
-          <motion.div
-            style={{ opacity: opacityFade }}
-            className="lg:col-span-5 relative h-[480px] hidden lg:block"
-          >
+          {/* Right — featured project card */}
+          {featuredProject && (
             <motion.div
-              initial={{ opacity: 0, y: 40, rotate: -8 }}
-              animate={{ opacity: 1, y: 0, rotate: -4 }}
-              transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              style={{ y: yCardA }}
-              className="absolute top-0 right-0 h-[300px] w-[260px]"
+              style={{ opacity: opacityFade }}
+              className="lg:col-span-5 relative h-[520px] hidden lg:flex items-center justify-center"
             >
-              <TiltCard
-                max={6}
-                glare
-                className="h-full w-full rounded-3xl overflow-hidden shadow-2xl shadow-sage/20"
-                style={{
-                  background:
-                    'linear-gradient(135deg, #5d6ef4 0%, #010101 100%)',
-                }}
-              >
-                <div className="h-full w-full flex flex-col justify-end p-6 text-cream">
-                  <div className="flex items-center gap-2.5">
-                    <span className="h-px w-5 bg-accent" />
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-accent">
-                      Production
-                    </span>
-                  </div>
-                  <div className="font-display text-3xl mt-3 leading-tight">
-                    Film <span className="italic">signature</span>
-                  </div>
-                  <div className="text-sm mt-1.5 text-cream/70">
-                    PME · Luxe · 4K
-                  </div>
-                </div>
-              </TiltCard>
+              <FeaturedProjectCard project={featuredProject} y={cardY} />
             </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 40, rotate: 9 }}
-              animate={{ opacity: 1, y: 0, rotate: 5 }}
-              transition={{ duration: 1, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              style={{ y: yCardB }}
-              className="absolute top-[180px] left-0 h-[260px] w-[240px]"
-            >
-              <TiltCard
-                max={6}
-                glare
-                className="h-full w-full rounded-3xl overflow-hidden shadow-2xl shadow-stone/40"
-                style={{
-                  background:
-                    'linear-gradient(135deg, #FAF1E6 0%, #C7C0AE 100%)',
-                }}
-              >
-                <div className="h-full w-full flex flex-col justify-end p-6 text-sage">
-                  <div className="flex items-center gap-2.5">
-                    <span className="h-px w-5 bg-accent" />
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.32em] text-accent">
-                      Stratégie
-                    </span>
-                  </div>
-                  <div className="font-display text-3xl mt-3 leading-tight">
-                    Plan <span className="italic">360°</span>
-                  </div>
-                  <div className="text-sm mt-1.5 text-sage/65">
-                    Audit · Persona · Indicateurs
-                  </div>
-                </div>
-              </TiltCard>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.7, y: 30 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ ...SOFT_SPRING, delay: 0.7 }}
-              style={{ y: yStat }}
-              className="absolute bottom-4 right-8 h-[140px] w-[180px]"
-            >
-              <TiltCard
-                max={10}
-                className="h-full w-full rounded-3xl bg-cream border border-sage/15 shadow-xl shadow-sage/10 p-5 flex flex-col justify-between"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="h-px w-4 bg-accent" />
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
-                    Engagement
-                  </span>
-                </div>
-                <div className="font-display text-5xl text-accent leading-none">
-                  <motion.span
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ ...SOFT_SPRING, delay: 1.1 }}
-                    className="inline-block"
-                  >
-                    +248%
-                  </motion.span>
-                </div>
-                <div className="text-xs text-sage/60 italic">
-                  vs trimestre précédent
-                </div>
-              </TiltCard>
-            </motion.div>
-          </motion.div>
+          )}
         </div>
       </div>
 
@@ -347,5 +282,130 @@ export default function Hero({ onOpenIntake }: { onOpenIntake: () => void }) {
         />
       </motion.div>
     </section>
+  );
+}
+
+/* -------------------- Featured project card ----------------------------- */
+function FeaturedProjectCard({
+  project,
+  y,
+}: {
+  project: Project;
+  y: MotionValue<number>;
+}) {
+  const prefersReduced = useReducedMotion();
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 60, rotate: -3 }}
+      animate={{ opacity: 1, y: 0, rotate: -2 }}
+      transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+      style={{ y }}
+      className="relative w-[360px] aspect-[4/5] max-h-[500px]"
+    >
+      {/* Continuous floating layer — gentle bob + sway */}
+      <motion.div
+        animate={
+          prefersReduced
+            ? undefined
+            : { y: [0, -10, 0], rotate: [-1, 1.2, -1] }
+        }
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+        className="h-full w-full motion-reduce:!animate-none"
+      >
+        {/* Editorial accent eyebrow floating top-left, slightly outside */}
+        <motion.div
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ ...SOFT_SPRING, delay: 0.8 }}
+          className="absolute -top-3 -left-3 z-20 inline-flex items-center gap-2 rounded-full bg-cream text-sage px-3 py-1.5 shadow-lg shadow-moss/30"
+        >
+          <span className="relative inline-flex h-1.5 w-1.5">
+            <motion.span
+              aria-hidden
+              animate={{ scale: [1, 2.4, 1], opacity: [0.7, 0, 0.7] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: 'easeOut' }}
+              className="absolute inset-0 rounded-full bg-accent motion-reduce:!animate-none"
+            />
+            <span className="relative inline-block h-1.5 w-1.5 rounded-full bg-accent" />
+          </span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-accent">
+            À découvrir
+          </span>
+        </motion.div>
+
+        <Link
+          href={`/projets/${project.slug}`}
+          className="group block h-full w-full relative rounded-[28px] overflow-hidden shadow-2xl shadow-moss/30"
+          aria-label={project.coverAlt || `Voir le projet ${project.title}`}
+        >
+          <TiltCard
+            max={6}
+            glare
+            className="h-full w-full"
+            style={coverStyle(project.cover)}
+          >
+            {/* Soft cover zoom on hover */}
+            <motion.div
+              aria-hidden
+              initial={false}
+              whileHover={{ scale: 1.06 }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute inset-0 motion-reduce:!transform-none"
+              style={coverStyle(project.cover)}
+            />
+
+            {/* Dark gradient anchor for legibility */}
+            <div className="absolute inset-0 bg-gradient-to-t from-moss/90 via-moss/30 to-moss/10 group-hover:from-moss/95 transition-opacity duration-700" />
+
+            {/* Year pill */}
+            <div className="absolute top-5 left-5 inline-flex items-center gap-1.5 rounded-full bg-cream/85 backdrop-blur-sm px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-sage z-10">
+              {project.year}
+            </div>
+
+            {/* Arrow corner */}
+            <motion.span
+              aria-hidden
+              whileHover={{ rotate: 45, scale: 1.1 }}
+              transition={SOFT_SPRING}
+              className="absolute top-5 right-5 grid h-10 w-10 place-items-center rounded-full bg-cream text-sage z-10 shadow-md shadow-moss/40"
+            >
+              <ArrowUpRight size={16} />
+            </motion.span>
+
+            {/* Bottom content */}
+            <div className="absolute bottom-0 left-0 right-0 p-6 text-cream z-10">
+              <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                {project.categories.slice(0, 2).map((c) => (
+                  <span
+                    key={c}
+                    className="text-[10px] font-semibold uppercase tracking-[0.28em] text-cream/85 bg-cream/15 backdrop-blur-sm rounded-full px-2.5 py-0.5"
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+              <h3 className="font-display text-3xl md:text-4xl leading-[1.05]">
+                {project.title}
+              </h3>
+              <div className="mt-1.5 text-sm text-cream/75">{project.client}</div>
+
+              <div className="mt-5 inline-flex items-center gap-2 text-[12px] font-medium uppercase tracking-[0.28em] text-accent">
+                Découvrir
+                <motion.span
+                  aria-hidden
+                  className="inline-block"
+                  initial={{ x: 0 }}
+                  whileHover={{ x: 4 }}
+                  transition={SOFT_SPRING}
+                >
+                  <ArrowRight size={14} />
+                </motion.span>
+              </div>
+            </div>
+          </TiltCard>
+        </Link>
+      </motion.div>
+    </motion.div>
   );
 }

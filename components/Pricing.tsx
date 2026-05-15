@@ -129,6 +129,74 @@ function PricingCard({ item, idx }: { item: PricingItem; idx: number }) {
   );
 }
 
+/* --------------------- Cards layout per count --------------------------- */
+function CardsLayout({ cards }: { cards: PricingItem[] }) {
+  // Special case: 5 cards → row of 3, then row of 2 centered below. Avoids
+  // the lonely "3+2 left-aligned" feel of a plain 3-col grid.
+  if (cards.length === 5) {
+    return (
+      <div className="space-y-5 md:space-y-6">
+        <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
+          {cards.slice(0, 3).map((item, i) => (
+            <PricingCard key={item.id} item={item} idx={i} />
+          ))}
+        </div>
+        <div className="grid gap-5 md:gap-6 grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto">
+          {cards.slice(3).map((item, i) => (
+            <PricingCard key={item.id} item={item} idx={i + 3} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Other counts — pick the most balanced grid for symmetry.
+  const gridCols =
+    cards.length === 4
+      ? 'grid-cols-1 md:grid-cols-2 lg:max-w-4xl lg:mx-auto'
+      : cards.length === 2
+        ? 'grid-cols-1 md:grid-cols-2 lg:max-w-3xl lg:mx-auto'
+        : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:max-w-6xl lg:mx-auto';
+
+  return (
+    <div className={cn('grid gap-5 md:gap-6', gridCols)}>
+      {cards.map((item, i) => (
+        <PricingCard key={item.id} item={item} idx={i} />
+      ))}
+    </div>
+  );
+}
+
+/* ------------------------ Compact mini-card ----------------------------- */
+function CompactCard({ item, idx }: { item: PricingItem; idx: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{ ...SOFT_SPRING, delay: idx * 0.03 }}
+      whileHover={{ y: -3 }}
+      className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-0.75rem)] xl:w-[260px] rounded-2xl bg-cream/95 backdrop-blur-sm border border-cream/15 px-4 py-3.5 shadow-[0_1px_2px_rgba(1,1,1,0.04),0_10px_30px_rgba(1,1,1,0.08)]"
+    >
+      <div className="flex items-baseline justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="font-medium text-sage text-sm leading-tight">
+            {item.name}
+          </div>
+          {item.highlight && (
+            <div className="text-[11px] text-sage/55 mt-1 leading-snug">
+              {item.highlight}
+            </div>
+          )}
+        </div>
+        <div className="font-display text-base text-sage whitespace-nowrap flex-shrink-0">
+          {item.price}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function Pricing({ groups }: { groups: PricingGroup[] }) {
   const [active, setActive] = useState(groups[0]?.id);
   const current = groups.find((g) => g.id === active) ?? groups[0];
@@ -244,13 +312,6 @@ export default function Pricing({ groups }: { groups: PricingGroup[] }) {
         {(() => {
           const cards = (current?.items ?? []).filter((i) => !i.compact);
           const compact = (current?.items ?? []).filter((i) => i.compact);
-          // Pick the most balanced layout for the card count.
-          const gridCols =
-            cards.length === 4
-              ? 'grid-cols-1 md:grid-cols-2 lg:max-w-4xl lg:mx-auto'
-              : cards.length === 2
-                ? 'grid-cols-1 md:grid-cols-2 lg:max-w-3xl lg:mx-auto'
-                : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
           return (
             <AnimatePresence mode="wait">
               <motion.div
@@ -260,52 +321,31 @@ export default function Pricing({ groups }: { groups: PricingGroup[] }) {
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               >
-              {cards.length > 0 && (
-                <div className={cn('grid gap-5 md:gap-6', gridCols)}>
-                  {cards.map((item, i) => (
-                    <PricingCard key={item.id} item={item} idx={i} />
-                  ))}
-                </div>
-              )}
+                {cards.length > 0 && <CardsLayout cards={cards} />}
 
-              {compact.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                  className="mt-10 card-soft bg-cream/95 p-6 md:p-8"
-                >
-                  <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2 mb-5">
-                    <h3 className="font-display text-2xl text-sage">
-                      Options à la carte
-                    </h3>
-                    <p className="text-sm text-sage/60">
-                      Pour personnaliser votre tournage. Tarifs HT.
-                    </p>
-                  </div>
-                  <ul className="divide-y divide-sage/10">
-                    {compact.map((item) => (
-                      <li
-                        key={item.id}
-                        className="flex items-baseline justify-between gap-4 py-3 first:pt-0 last:pb-0"
-                      >
-                        <div className="min-w-0">
-                          <div className="font-medium text-sage">{item.name}</div>
-                          {item.highlight && (
-                            <div className="text-xs text-sage/55 mt-0.5">
-                              {item.highlight}
-                            </div>
-                          )}
-                        </div>
-                        <div className="font-display text-lg text-sage whitespace-nowrap flex-shrink-0">
-                          {item.price}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                </motion.div>
-              )}
+                {compact.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                    className="mt-14"
+                  >
+                    <div className="text-center mb-6">
+                      <h3 className="font-display text-2xl text-cream">
+                        Options à la carte
+                      </h3>
+                      <p className="mt-1 text-sm text-cream/65">
+                        À combiner pour personnaliser votre projet · Tarifs HT
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap justify-center gap-3 md:gap-4 max-w-6xl mx-auto">
+                      {compact.map((item, i) => (
+                        <CompactCard key={item.id} item={item} idx={i} />
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
               </motion.div>
             </AnimatePresence>
           );

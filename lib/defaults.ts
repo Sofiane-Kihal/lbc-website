@@ -11,6 +11,9 @@ export type Project = {
   coverAlt?: string; // alt / OG image description
   description: string;
   scope: string[];
+  // When true, this project takes the spotlight on the Hero (only one
+  // should be featured at a time; falls back to the first project).
+  featured?: boolean;
   // SEO
   metaTitle?: string; // overrides <title> for /projets/<slug>
   metaDescription?: string; // <meta name="description">
@@ -83,6 +86,7 @@ export const defaultProjects: Project[] = [
     categories: ['Stratégie 360°', 'Production'],
     year: '2025',
     cover: 'gradient:sage→moss',
+    featured: true,
     description:
       "Refonte complète de la présence digitale d'une maison de parfumerie indépendante : audit, stratégie social media et production de 12 films de marque.",
     scope: ['Audit', 'Stratégie 360°', 'Film de marque', 'Community management'],
@@ -404,7 +408,12 @@ export const defaultSubscriptions: Subscription[] = [
     name: 'Studio',
     price: '790€',
     cadence: '/ mois',
-    bullets: ['3 posts / semaine', 'Ligne éditoriale', 'Stories'],
+    bullets: [
+      '3 posts / semaine',
+      'Ligne éditoriale',
+      'Stories',
+      'Tournages au smartphone — agile et réactif',
+    ],
     addon: { name: 'Community Management', price: '500€' },
   },
   {
@@ -413,7 +422,13 @@ export const defaultSubscriptions: Subscription[] = [
     price: '1 090€',
     cadence: '/ mois',
     featured: true,
-    bullets: ['3 posts / semaine', 'Ligne éditoriale', 'Stories', '½ journée de tournage'],
+    bullets: [
+      '3 posts / semaine',
+      'Ligne éditoriale',
+      'Stories',
+      '½ journée de tournage · caméras cinéma Sony FX3',
+      'Montage · étalonnage · sound design',
+    ],
     addon: { name: 'Community Management', price: '700€' },
   },
   {
@@ -421,7 +436,13 @@ export const defaultSubscriptions: Subscription[] = [
     name: 'Prestige',
     price: '1 690€',
     cadence: '/ mois',
-    bullets: ['5 posts / semaine', 'Ligne éditoriale', 'Stories', '1 journée de tournage'],
+    bullets: [
+      '5 posts / semaine',
+      'Ligne éditoriale',
+      'Stories',
+      '1 journée de tournage · caméras cinéma Sony FX3',
+      'Montage · étalonnage · sound design',
+    ],
     addon: { name: 'Community Management', price: '900€' },
   },
 ];

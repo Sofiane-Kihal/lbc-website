@@ -63,7 +63,10 @@ export default function HomeShell({
       <ScrollProgress />
       <Navigation onOpenIntake={openIntake} />
       <main>
-        <Hero onOpenIntake={openIntake} />
+        <Hero
+          onOpenIntake={openIntake}
+          featuredProject={projects.find((p) => p.featured) ?? projects[0]}
+        />
         <LogoMarquee variant="noir" logos={banners.logos} />
         <ProjectsGrid projects={projects} />
         <Services />
