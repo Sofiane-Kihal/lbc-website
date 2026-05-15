@@ -28,11 +28,6 @@ function PricingCard({ item, idx }: { item: PricingItem; idx: number }) {
       whileHover={{ y: -5 }}
       className="card-soft bg-cream/95 p-6 md:p-7 flex flex-col group relative overflow-hidden"
     >
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 -left-1/4 w-1/4 -skew-x-12 bg-gradient-to-r from-transparent via-sage/10 to-transparent translate-x-[-200%] group-hover:translate-x-[700%] transition-transform duration-[1300ms] ease-out motion-reduce:!hidden"
-      />
-
       <h3 className="font-display text-2xl text-sage leading-tight relative">{item.name}</h3>
       {item.highlight && (
         <div className="mt-2 inline-flex items-center gap-2.5 relative">

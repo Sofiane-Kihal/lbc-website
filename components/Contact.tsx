@@ -86,10 +86,6 @@ export default function Contact({ onOpenIntake }: { onOpenIntake: () => void }) 
                     className="transition-transform group-hover:translate-x-1"
                   />
                 </span>
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/35 to-transparent translate-x-[-150%] group-hover:translate-x-[450%] transition-transform duration-[1100ms] ease-out motion-reduce:!hidden"
-                />
               </button>
             </Magnetic>
             <motion.a

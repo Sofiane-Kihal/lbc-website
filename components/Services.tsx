@@ -106,12 +106,6 @@ function ServiceCard({
         spanClass
       )}
     >
-      {/* Hover sheen */}
-      <span
-        aria-hidden
-        className="pointer-events-none absolute inset-y-0 -left-1/4 w-1/4 -skew-x-12 bg-gradient-to-r from-transparent via-sage/10 to-transparent translate-x-[-200%] group-hover:translate-x-[700%] transition-transform duration-[1400ms] ease-out motion-reduce:!hidden"
-      />
-
       <div className="flex items-baseline gap-4 relative">
         <motion.span
           initial={{ opacity: 0, y: 8 }}
