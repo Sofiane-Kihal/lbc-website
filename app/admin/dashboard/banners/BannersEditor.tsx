@@ -11,6 +11,7 @@ import {
   ImageIcon,
 } from 'lucide-react';
 import type { Banners, LogoItem } from '@/lib/defaults';
+import { uploadMedia } from '../upload';
 
 function blankLogo(): LogoItem {
   return {
@@ -49,12 +50,8 @@ export default function BannersEditor({ initial }: { initial: Banners }) {
     setUploadingId(id);
     setError(null);
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Erreur upload');
-      updateLogo(id, { image: data.url });
+      const { url } = await uploadMedia(file);
+      updateLogo(id, { image: url });
     } catch (e: any) {
       setError(e?.message || 'Erreur upload');
     } finally {

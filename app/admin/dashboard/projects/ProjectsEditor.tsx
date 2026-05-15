@@ -16,6 +16,7 @@ import type { Project } from '@/lib/defaults';
 import { slugify } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { SlugInput, ListInput } from '../inputs';
+import { uploadMedia } from '../upload';
 
 const COVER_PRESETS = [
   'gradient:sage→moss',
@@ -81,12 +82,8 @@ export default function ProjectsEditor({ initial }: { initial: Project[] }) {
     setUploadingId(id);
     setError(null);
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Erreur upload');
-      update(id, { cover: data.url });
+      const { url } = await uploadMedia(file);
+      update(id, { cover: url });
     } catch (e: any) {
       setError(e?.message || 'Erreur upload');
     } finally {
