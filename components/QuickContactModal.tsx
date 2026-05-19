@@ -223,7 +223,7 @@ export default function QuickContactModal({
                 className="p-6 md:p-7 flex-1 overflow-y-auto"
               >
                 <p className="text-sage/70 text-sm mb-5">
-                  Vos coordonnées — on revient vers vous sous 48h avec une proposition
+                  Vos coordonnées. On revient vers vous sous 48h avec une proposition
                   ajustée.
                 </p>
 

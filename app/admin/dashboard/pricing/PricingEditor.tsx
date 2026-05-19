@@ -197,7 +197,7 @@ export default function PricingEditor({ initial }: { initial: PricingGroup[] }) 
                         />
                       </Field>
                       <Field
-                        label="Niveaux / variantes (optionnel — un par ligne, format : Label | Prix | Description | Bullets séparés par ;)"
+                        label="Niveaux / variantes (optionnel : un par ligne, format : Label | Prix | Description | Bullets séparés par ;)"
                         className="md:col-span-2"
                       >
                         <TiersInput
@@ -209,7 +209,7 @@ export default function PricingEditor({ initial }: { initial: PricingGroup[] }) 
                           description (3<sup>e</sup> colonne) apparaît en italique sous
                           le sélecteur. Les bullets (4<sup>e</sup> colonne, séparés par
                           <code className="bg-sage/8 px-1 rounded mx-0.5">;</code>)
-                          remplacent ceux de l'item pour ce tier — utile quand le
+                          remplacent ceux de l'item pour ce tier. Utile quand le
                           contenu diffère (ex. tier Premium qui ajoute « Site vitrine »
                           et « SEO »). Sans 4<sup>e</sup> colonne, le tier hérite des
                           bullets de l'item.

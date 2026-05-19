@@ -28,7 +28,7 @@ const services: Service[] = [
     reveal: {
       question: 'Un audit, à quoi ça sert ?',
       answer:
-        "Un audit, c'est d'abord prendre le temps de regarder. On lit en profondeur ce que vous publiez aujourd'hui : ce qui parle, ce qui passe à côté, ce qui mérite d'être tenu, ce qui peut être abandonné. On examine les performances (engagement, portée, croissance), la cohérence du propos, le positionnement face aux concurrents et l'adéquation avec votre cible. À la sortie : des opportunités d'optimisation, des points faibles corrigés, une stratégie ajustée — et surtout, une idée précise de ce qu'on veut dire et à qui.",
+        "Un audit, c'est d'abord prendre le temps de regarder. On lit en profondeur ce que vous publiez aujourd'hui : ce qui parle, ce qui passe à côté, ce qui mérite d'être tenu, ce qui peut être abandonné. On examine les performances (engagement, portée, croissance), la cohérence du propos, le positionnement face aux concurrents et l'adéquation avec votre cible. À la sortie : des opportunités d'optimisation, des points faibles corrigés, une stratégie ajustée, et surtout, une idée précise de ce qu'on veut dire et à qui.",
     },
   },
   {
@@ -45,7 +45,7 @@ const services: Service[] = [
     reveal: {
       question: 'Une stratégie, à quoi ça sert ?',
       answer:
-        "Une stratégie social media, c'est d'abord choisir ce qu'on veut dire — et à qui. On planifie l'ensemble des actions sur les réseaux sociaux pour atteindre des objectifs précis (visibilité, engagement, conversion), oui, mais on commence par un propos clair, des cibles incarnées, des messages qui valent la peine d'être lus. On s'appuie ensuite sur l'analyse des performances pour ajuster en continu — la stratégie n'est jamais figée, elle écoute.\n\nUne stratégie 360° pousse la cohérence plus loin : tous les canaux numériques (réseaux sociaux, site web, email, publicité, référencement) parlent d'une seule voix. Un message uniforme, une présence partout, des leviers qui se renforcent au lieu de se contredire — et une marque qui prend de l'épaisseur, partout où on la croise.",
+        "Une stratégie social media, c'est d'abord choisir ce qu'on veut dire, et à qui. On planifie l'ensemble des actions sur les réseaux sociaux pour atteindre des objectifs précis (visibilité, engagement, conversion), oui, mais on commence par un propos clair, des cibles incarnées, des messages qui valent la peine d'être lus. On s'appuie ensuite sur l'analyse des performances pour ajuster en continu : la stratégie n'est jamais figée, elle écoute.\n\nUne stratégie 360° pousse la cohérence plus loin : tous les canaux numériques (réseaux sociaux, site web, email, publicité, référencement) parlent d'une seule voix. Un message uniforme, une présence partout, des leviers qui se renforcent au lieu de se contredire, et une marque qui prend de l'épaisseur, partout où on la croise.",
     },
   },
   {
@@ -182,7 +182,7 @@ export default function Services() {
             </h2>
             <p className="mt-5 text-cream/80 text-lg">
               Cinq métiers, un seul fil rouge : un propos juste, un objectif clair.
-              On ne saute jamais une étape — surtout pas celle où l'on prend le temps
+              On ne saute jamais une étape, surtout pas celle où l'on prend le temps
               de penser.
             </p>
           </div>

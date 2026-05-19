@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ key, url: `/api/media/${key}` });
   } catch (e: any) {
     return NextResponse.json(
-      { error: `Erreur serveur — ${e?.message || 'inconnue'}` },
+      { error: `Erreur serveur : ${e?.message || 'inconnue'}` },
       { status: 500 }
     );
   }

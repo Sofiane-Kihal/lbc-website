@@ -423,7 +423,13 @@ deploy preview pour les commits locaux non poussés.
 - **Tutoiement** dans les contenus internes / docs / commentaires de code.
 - **Vouvoiement** dans tous les textes face au visiteur (Hero, sections, CTA,
   modales).
-- Phrases courtes. Tirets cadratin (`—`) volontiers.
+- Phrases courtes.
+- **Pas de tirets cadratin (`—`) dans le contenu visible** (copy, SEO,
+  labels, messages d'erreur). C'est devenu un marqueur "texte IA". Préférer :
+  point + nouvelle phrase, virgule, deux-points, ou `·` pour les
+  séparateurs typographiques courts. Pour les fourchettes de prix : `à`
+  (ex. `1 500 à 2 500€`). Les commentaires de code (`//`, `/** */`, JSX
+  `{/* */}`) peuvent garder le tiret cadratin sans impact.
 - Pas de superlatifs creux ("le meilleur", "le numéro 1"). Si on en met,
   c'est appuyé par un chiffre ou un fait.
 - Italiques sur 2 ou 3 mots maximum, jamais sur une phrase entière.

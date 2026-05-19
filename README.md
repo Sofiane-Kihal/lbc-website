@@ -1,4 +1,4 @@
-# La Bande Créative — Site web
+# La Bande Créative · Site web
 
 Bienvenue. Ce README t'accompagne **pas à pas**, en partant du principe que tu n'as
 jamais déployé un site Next.js sur Netlify. Lis dans l'ordre, ne saute pas d'étape :
@@ -19,7 +19,7 @@ chaque section dépend de la précédente.
 9. [Vérifier que tout fonctionne en prod](#9-vérification-en-production)
 10. [Workflow quotidien : modifier puis redéployer](#10-workflow-quotidien)
 11. [Utiliser l'espace admin](#11-espace-admin)
-12. [Dépannage — les erreurs fréquentes](#12-dépannage)
+12. [Dépannage · les erreurs fréquentes](#12-dépannage)
 13. [Architecture du projet (pour les curieux)](#13-architecture)
 
 ---
@@ -126,7 +126,7 @@ Tu verras un message du style :
 Ouvre [http://localhost:3000](http://localhost:3000) dans ton navigateur. Toute
 modification du code se reflète **automatiquement** dans le navigateur (hot reload).
 
-> 💡 En local, **Netlify Blobs n'est pas branché** — c'est normal. Le site affiche les
+> 💡 En local, **Netlify Blobs n'est pas branché**, c'est normal. Le site affiche les
 > contenus par défaut définis dans `lib/defaults.ts`. Pour tester l'admin avec une vraie
 > persistance, déploie d'abord sur Netlify (étapes 5 à 8).
 
@@ -162,7 +162,7 @@ SESSION_SECRET=ton-resultat-aleatoire-ici
 ```
 
 > ⚠️ **Ne mets jamais** ce fichier `.env.local` sur GitHub. Le `.gitignore` t'en protège
-> déjà — vérifie quand même avec `git status` que tu ne le vois pas avant de commit.
+> déjà. Vérifie quand même avec `git status` que tu ne le vois pas avant de commit.
 
 ---
 
@@ -175,7 +175,7 @@ Pour que Netlify puisse déployer le site, il doit être hébergé sur GitHub.
 1. Va sur [github.com/new](https://github.com/new).
 2. Nom du dépôt : `lbc-website` (ou ce que tu veux).
 3. Choisis **Private** (recommandé).
-4. **Ne coche rien** (pas de README, pas de .gitignore, pas de licence — on en a déjà).
+4. **Ne coche rien** (pas de README, pas de .gitignore, pas de licence, on en a déjà).
 5. Clique **Create repository**.
 
 GitHub t'affiche ensuite l'URL du dépôt, du genre
@@ -190,7 +190,7 @@ cd /Users/sofiane/Development/LBC/website
 
 git init
 git add .
-git commit -m "Initial commit — site La Bande Créative"
+git commit -m "Initial commit · site La Bande Créative"
 git branch -M main
 git remote add origin https://github.com/ton-pseudo/lbc-website.git
 git push -u origin main
@@ -223,7 +223,7 @@ Netlify détecte automatiquement Next.js. Vérifie que tu as :
 | Build command         | `npm run build`   |
 | Publish directory     | `.next`           |
 
-> ⚠️ **Ne lance pas encore le déploiement** — il faut d'abord ajouter les variables
+> ⚠️ **Ne lance pas encore le déploiement**. Il faut d'abord ajouter les variables
 > d'environnement (étape suivante), sinon le login admin ne marchera pas.
 
 Clique **Add environment variables** (en bas du formulaire de déploiement).
@@ -264,13 +264,13 @@ Netlify Blobs est activé automatiquement pour tous les sites Next.js déployés
 Netlify. Les contenus que tu modifies depuis l'admin (`/admin`) sont stockés dans
 deux « bacs » :
 
-- `lbc-content` — projets, tarifs, abonnements
-- `lbc-leads` — briefs prospects soumis depuis le bouton « Parlez-nous de votre projet »
+- `lbc-content` : projets, tarifs, abonnements
+- `lbc-leads` : briefs prospects soumis depuis le bouton « Parlez-nous de votre projet »
 
 Pour les inspecter : Netlify dashboard → ton site → **Blobs** (dans la barre latérale).
 
 > ⚠️ Tant que personne n'a modifié quoi que ce soit dans l'admin, les Blobs sont
-> vides — c'est normal. Le site affiche alors les **contenus par défaut** de
+> vides, c'est normal. Le site affiche alors les **contenus par défaut** de
 > `lib/defaults.ts`. Dès la première sauvegarde, les Blobs prennent le relais.
 
 ---
@@ -330,7 +330,7 @@ npm run typecheck   # vérifie les types TypeScript
 npm run build       # lance le build de prod localement
 ```
 
-Si l'un des deux échoue, **ne pousse pas** — corrige d'abord. Sinon le build
+Si l'un des deux échoue, **ne pousse pas**. Corrige d'abord. Sinon le build
 échouera côté Netlify et le site ne se mettra pas à jour.
 
 ---

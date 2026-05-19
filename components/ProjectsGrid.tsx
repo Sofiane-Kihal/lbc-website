@@ -37,7 +37,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                   href={`/projets/${p.slug}`}
                   className="group block relative aspect-[4/5] rounded-3xl overflow-hidden"
                   style={coverStyle(p.cover)}
-                  aria-label={p.coverAlt || `${p.title} — ${p.categories.join(', ')}`}
+                  aria-label={p.coverAlt || `${p.title} · ${p.categories.join(', ')}`}
                 >
                   {/* Image zoom on hover (via inner div) */}
                   <motion.div

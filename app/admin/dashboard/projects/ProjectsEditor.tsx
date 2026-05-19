@@ -244,7 +244,7 @@ export default function ProjectsEditor({ initial }: { initial: Project[] }) {
                       <input
                         className="input-base"
                         value={p.metaTitle || ''}
-                        placeholder={p.title ? `${p.title} — La Bande Créative` : 'Titre SEO'}
+                        placeholder={p.title ? `${p.title} | La Bande Créative` : 'Titre SEO'}
                         onChange={(e) => update(p.id, { metaTitle: e.target.value })}
                       />
                       <span className="block text-[11px] text-sage/55 mt-1">

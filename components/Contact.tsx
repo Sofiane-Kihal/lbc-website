@@ -61,7 +61,7 @@ export default function Contact({ onOpenIntake }: { onOpenIntake: () => void }) 
             className="mt-7 max-w-xl mx-auto text-cream/80 text-lg leading-relaxed"
           >
             Quinze questions, cinq minutes. À la carte, en abonnement, ou complètement
-            sur-mesure — on construit ensemble la formule qui colle vraiment à votre
+            sur-mesure. On construit ensemble la formule qui colle vraiment à votre
             propos, à votre objectif et à votre budget. On écoute avant de proposer,
             jamais l'inverse.
           </motion.p>

@@ -37,8 +37,8 @@ export default function Footer() {
               <span className="font-display text-xl">La Bande Créative</span>
             </Link>
             <p className="mt-5 max-w-sm text-cream/80 text-sm leading-relaxed">
-              Agence de communication 360° à <strong className="text-cream">Mantes-la-Jolie</strong>
-              {' '}— production vidéo, photo et stratégie pour les marques des Yvelines (78)
+              Agence de communication 360° à <strong className="text-cream">Mantes-la-Jolie</strong>.
+              {' '}Production vidéo, photo et stratégie pour les marques des Yvelines (78)
               et d'Île-de-France.
             </p>
             <address className="mt-4 text-cream/60 text-xs not-italic" itemScope itemType="https://schema.org/PostalAddress">
@@ -119,7 +119,7 @@ export default function Footer() {
           transition={{ duration: 0.8, delay: 0.3 }}
           className="mt-16 pt-6 border-t border-cream/10 flex flex-col md:flex-row gap-4 items-center justify-between text-xs text-cream/60"
         >
-          <p>© {new Date().getFullYear()} La Bande Créative — Tous droits réservés</p>
+          <p>© {new Date().getFullYear()} La Bande Créative · Tous droits réservés</p>
           <div className="flex gap-5">
             <a href="#" className="hover:text-cream transition-colors">Mentions légales</a>
             <a href="#" className="hover:text-cream transition-colors">Confidentialité</a>

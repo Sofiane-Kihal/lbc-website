@@ -120,7 +120,7 @@ export default function BannersEditor({ initial }: { initial: Banners }) {
         <div>
           <h1 className="font-display text-3xl text-sage">Banderoles</h1>
           <p className="text-sage/60 text-sm mt-0.5">
-            Les deux bandeaux défilants — logos clients (sous le hero) et
+            Les deux bandeaux défilants : logos clients (sous le hero) et
             slogans (avant les tarifs).
           </p>
         </div>
@@ -179,11 +179,11 @@ export default function BannersEditor({ initial }: { initial: Banners }) {
       <section className="mb-12">
         <div className="flex items-baseline justify-between gap-3 mb-4">
           <div>
-            <h2 className="font-display text-2xl text-sage">1er bandeau — logos clients</h2>
+            <h2 className="font-display text-2xl text-sage">1er bandeau · logos clients</h2>
             <p className="text-sage/60 text-sm mt-1">
               Importez vos logos (PNG, SVG, WebP…). Sur le site, ils sont rendus en
-              monochrome cream par défaut pour rester cohérents sur le fond indigo —
-              désactivez l'option si vous voulez garder les couleurs d'origine.
+              monochrome cream par défaut pour rester cohérents sur le fond indigo.
+              Désactivez l'option si vous voulez garder les couleurs d'origine.
             </p>
           </div>
         </div>
@@ -203,7 +203,7 @@ export default function BannersEditor({ initial }: { initial: Banners }) {
         <div className="flex items-baseline justify-between gap-3 mb-4">
           <div>
             <h2 className="font-display text-2xl text-sage">
-              2e bandeau — slogans défilants
+              2e bandeau · slogans défilants
             </h2>
             <p className="text-sage/60 text-sm mt-1">
               Phrases courtes affichées sur le bandeau noir, séparées par un point

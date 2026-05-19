@@ -49,7 +49,7 @@ export async function generateMetadata({
 
   const title =
     project.metaTitle ||
-    `${project.title} — ${project.categories.join(', ')} | ${SITE_NAME}`;
+    `${project.title} · ${project.categories.join(', ')} | ${SITE_NAME}`;
   const description = buildDescription(project);
   const ogImage =
     project.cover.startsWith('http') || project.cover.startsWith('/api/media/')
@@ -126,7 +126,7 @@ export default async function ProjectPage({
           className="relative h-[60vh] min-h-[400px] grain"
           style={coverStyle(project.cover)}
           aria-label={
-            project.coverAlt || `${project.title} — ${project.categories.join(', ')}`
+            project.coverAlt || `${project.title} · ${project.categories.join(', ')}`
           }
         >
           <div className="absolute inset-0 bg-gradient-to-t from-sage/85 via-sage/30 to-transparent" />
@@ -192,7 +192,7 @@ export default async function ProjectPage({
                     href={`/projets/${p.slug}`}
                     className="group block relative aspect-[4/5] rounded-3xl overflow-hidden"
                     style={coverStyle(p.cover)}
-                    aria-label={p.coverAlt || `${p.title} — ${p.categories.join(', ')}`}
+                    aria-label={p.coverAlt || `${p.title} · ${p.categories.join(', ')}`}
                   >
                     <div className="absolute inset-0 bg-gradient-to-t from-sage/85 via-sage/20 to-transparent opacity-70 group-hover:opacity-90 transition-opacity" />
                     <div className="absolute top-5 right-5 grid h-9 w-9 place-items-center rounded-full bg-cream/85 text-sage transition-transform group-hover:rotate-45">

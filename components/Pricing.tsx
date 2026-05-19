@@ -357,7 +357,7 @@ export default function Pricing({ groups }: { groups: PricingGroup[] }) {
             Ces tarifs donnent un{' '}
             <strong className="text-cream">ordre de grandeur</strong>. Votre projet réel
             donne toujours lieu à un devis sur-mesure, ajusté à votre propos, votre
-            objectif et votre budget — on n'aime pas vendre des packages figés, ni
+            objectif et votre budget. On n'aime pas vendre des packages figés, ni
             cocher des cases sans intention derrière.
           </p>
         </div>

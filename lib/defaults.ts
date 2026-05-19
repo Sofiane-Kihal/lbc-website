@@ -135,7 +135,7 @@ export const defaultProjects: Project[] = [
     year: '2025',
     cover: 'gradient:stone→cream',
     description:
-      "Production hebdomadaire d'un podcast vidéo — 3 caméras Sony FX3, livraison en moins de 48h, 5 shreds par épisode.",
+      "Production hebdomadaire d'un podcast vidéo : 3 caméras Sony FX3, livraison en moins de 48h, 5 shreds par épisode.",
     scope: ['Multi-cam', 'Audio pro', 'Shreds', 'Diffusion'],
   },
   {
@@ -256,16 +256,16 @@ export const defaultPricing: PricingGroup[] = [
     id: 'production',
     title: 'Production',
     description:
-      'On tourne, on monte, on livre — avec un soin du détail qui se voit, même quand on ne le cherche pas.',
+      'On tourne, on monte, on livre, avec un soin du détail qui se voit, même quand on ne le cherche pas.',
     items: [
       {
         id: 'p-local',
         name: 'Local Express',
-        price: '450 — 550€',
+        price: '450 à 550€',
         highlight: 'Idéal pour démarrer · Commerçants, artisans, restaurateurs',
         bullets: [
           '3 Reels / TikToks (30s à 1min30)',
-          'Tournage 2h max — Run & Gun',
+          'Tournage 2h max, Run & Gun',
           'Montage dynamique optimisé algos',
           'Idéal pour tester le format',
         ],
@@ -285,7 +285,7 @@ export const defaultPricing: PricingGroup[] = [
       {
         id: 'p-immersion',
         name: 'Immersion',
-        price: '1 500 — 2 500€',
+        price: '1 500 à 2 500€',
         highlight: 'Multi-caméra · Conférences, interviews, événementiel',
         bullets: [
           '1 vidéo longue (3 à 5 min)',
@@ -297,7 +297,7 @@ export const defaultPricing: PricingGroup[] = [
       {
         id: 'p-signature',
         name: 'Signature',
-        price: '2 000 — 3 500€',
+        price: '2 000 à 3 500€',
         highlight: 'Film de marque · PME, luxe, professions libérales',
         bullets: [
           'Storyboard à partir de votre brief',
@@ -423,7 +423,7 @@ export const defaultSubscriptions: Subscription[] = [
       '3 posts / semaine',
       'Ligne éditoriale',
       'Stories',
-      'Tournages au smartphone — agile et réactif',
+      'Tournages au smartphone, agile et réactif',
     ],
     addon: { name: 'Community Management', price: '500€' },
   },

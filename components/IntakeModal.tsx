@@ -37,9 +37,9 @@ const questions: Question[] = [
     type: 'single',
     id: 'objective',
     title: 'Quel est votre objectif principal ?',
-    hint: 'Cap n°1 — c\'est lui qui dicte tout le reste.',
+    hint: 'Cap n°1. C\'est lui qui dicte tout le reste.',
     insight:
-      "Avant de penser contenus, on définit l'objectif. Visibilité, engagement et conversion ne se traitent pas du tout de la même manière — ni avec les mêmes formats, ni avec les mêmes indicateurs de performance.",
+      "Avant de penser contenus, on définit l'objectif. Visibilité, engagement et conversion ne se traitent pas du tout de la même manière, ni avec les mêmes formats, ni avec les mêmes indicateurs de performance.",
     options: [
       { value: 'visibilite', label: 'Visibilité / notoriété', description: 'Faire connaître la marque à de nouvelles audiences' },
       { value: 'engagement', label: 'Engagement / communauté', description: 'Activer et fidéliser une audience existante' },
@@ -67,7 +67,7 @@ const questions: Question[] = [
     id: 'strategy',
     title: 'Avez-vous une stratégie social media définie ?',
     insight:
-      "Sans stratégie, même un super contenu n'aura pas d'impact durable. Pas grave si la réponse est non — c'est exactement ce qu'on construit avec vous.",
+      "Sans stratégie, même un super contenu n'aura pas d'impact durable. Pas grave si la réponse est non, c'est exactement ce qu'on construit avec vous.",
     options: [
       { value: 'oui-claire', label: 'Oui, claire et documentée' },
       { value: 'oui-vague', label: 'Oui, mais à revoir / formaliser' },
@@ -80,7 +80,7 @@ const questions: Question[] = [
     id: 'audience',
     title: 'Connaissez-vous précisément votre cible ?',
     insight:
-      "« Tout le monde » n'est jamais une cible. Plus c'est précis (persona, pain points, plateformes utilisées), plus le message touche juste — et moins on dépense pour rien.",
+      "« Tout le monde » n'est jamais une cible. Plus c'est précis (persona, pain points, plateformes utilisées), plus le message touche juste, et moins on dépense pour rien.",
     options: [
       { value: 'persona', label: 'Oui, persona détaillé' },
       { value: 'grandes-lignes', label: 'Oui, grandes lignes' },
@@ -108,7 +108,7 @@ const questions: Question[] = [
     id: 'frequency',
     title: 'À quelle fréquence publiez-vous ?',
     insight:
-      "La régularité prime sur la quantité. 3 contenus / semaine bien produits valent mieux que 10 mal pensés — l'algorithme préfère, votre cerveau aussi.",
+      "La régularité prime sur la quantité. 3 contenus / semaine bien produits valent mieux que 10 mal pensés. L'algorithme préfère, votre cerveau aussi.",
     options: [
       { value: 'plusieurs-sem', label: 'Plusieurs fois par semaine' },
       { value: '1-2-sem', label: '1 à 2 fois par semaine' },
@@ -121,7 +121,7 @@ const questions: Question[] = [
     id: 'measure',
     title: 'Mesurez-vous les performances de vos contenus ?',
     insight:
-      "Ce qui ne se mesure pas ne s'améliore pas. On installe toujours un tableau de bord clair — et on l'utilise.",
+      "Ce qui ne se mesure pas ne s'améliore pas. On installe toujours un tableau de bord clair, et on l'utilise.",
     options: [
       { value: 'oui-regulier', label: 'Oui, régulièrement' },
       { value: 'parfois', label: 'Parfois, en survol' },
@@ -151,7 +151,7 @@ const questions: Question[] = [
     id: 'existing-content',
     title: 'Avez-vous des contenus existants à exploiter ?',
     insight:
-      "Photos, témoignages, archives — souvent on capitalise dessus avant de produire du neuf. Économie de temps, économie de budget.",
+      "Photos, témoignages, archives : souvent on capitalise dessus avant de produire du neuf. Économie de temps, économie de budget.",
     options: [
       { value: 'beaucoup', label: 'Oui, beaucoup' },
       { value: 'quelques', label: 'Quelques-uns' },
@@ -181,24 +181,24 @@ const questions: Question[] = [
     title: 'Quelle est la taille de votre structure ?',
     options: [
       { value: 'solo', label: 'Solo / freelance' },
-      { value: 'tpe', label: 'TPE — 2 à 10 personnes' },
-      { value: 'pme', label: 'PME — 10 à 50' },
-      { value: 'eti', label: 'ETI — 50 à 250' },
-      { value: 'grande', label: 'Grande entreprise — 250+' },
+      { value: 'tpe', label: 'TPE (2 à 10 personnes)' },
+      { value: 'pme', label: 'PME (10 à 50)' },
+      { value: 'eti', label: 'ETI (50 à 250)' },
+      { value: 'grande', label: 'Grande entreprise (250+)' },
     ],
   },
   {
     type: 'single',
     id: 'budget',
     title: 'Budget mensuel envisagé pour votre communication ?',
-    hint: 'Pas de jugement — on adapte.',
+    hint: 'Pas de jugement, on adapte.',
     insight:
       "On préfère savoir tôt pour vous proposer ce qui aura un vrai impact. Mieux vaut un seul axe bien fait qu'un éparpillement coûteux.",
     options: [
       { value: '<500', label: 'Moins de 500€' },
-      { value: '500-1500', label: '500 — 1 500€' },
-      { value: '1500-3000', label: '1 500 — 3 000€' },
-      { value: '3000-5000', label: '3 000 — 5 000€' },
+      { value: '500-1500', label: '500 à 1 500€' },
+      { value: '1500-3000', label: '1 500 à 3 000€' },
+      { value: '3000-5000', label: '3 000 à 5 000€' },
       { value: '5000+', label: 'Plus de 5 000€' },
       { value: 'sais-pas', label: 'Je ne sais pas encore' },
     ],
@@ -403,7 +403,7 @@ export default function IntakeModal({
                   </span>
                 </div>
                 <p className="mt-1.5 text-xs text-sage/55">
-                  Quinze questions, cinq minutes — sans engagement.
+                  Quinze questions, cinq minutes, sans engagement.
                 </p>
               </div>
               <button

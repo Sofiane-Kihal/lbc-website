@@ -30,8 +30,8 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: `${SITE_NAME} — Agence de communication à Mantes-la-Jolie (Yvelines)`,
-    template: `%s — ${SITE_NAME}`,
+    default: `${SITE_NAME} | Agence de communication à Mantes-la-Jolie (Yvelines)`,
+    template: `%s | ${SITE_NAME}`,
   },
   description: DEFAULT_DESCRIPTION,
   applicationName: SITE_NAME,
@@ -67,20 +67,20 @@ export const metadata: Metadata = {
     locale: SITE_LOCALE,
     url: SITE_URL,
     siteName: SITE_NAME,
-    title: `${SITE_NAME} — Agence de communication à Mantes-la-Jolie`,
+    title: `${SITE_NAME} | Agence de communication à Mantes-la-Jolie`,
     description: TAGLINE,
     images: [
       {
         url: '/og.png',
         width: 1200,
         height: 630,
-        alt: `${SITE_NAME} — agence de communication 360° à Mantes-la-Jolie`,
+        alt: `${SITE_NAME}, agence de communication 360° à Mantes-la-Jolie`,
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `${SITE_NAME} — Agence de communication à Mantes-la-Jolie`,
+    title: `${SITE_NAME} | Agence de communication à Mantes-la-Jolie`,
     description: TAGLINE,
     images: ['/og.png'],
   },

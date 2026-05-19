@@ -11,7 +11,7 @@ import Reveal, { SOFT_SPRING } from './Reveal';
 // 28–32k brut/year × ~1.45 (charges) ≈ 40–46k/year → ~3 400–3 850€/month.
 // Plus equipment, software, onboarding, management overhead pushes it to
 // ~3 800–4 500€/month before the candidate even produces content.
-const CDI_RANGE = '3 800 — 4 500 €';
+const CDI_RANGE = '3 800 à 4 500 €';
 
 export default function Subscriptions({
   items,
@@ -58,7 +58,7 @@ export default function Subscriptions({
             <p className="mt-5 text-sage/70 text-lg">
               Des packs mensuels pour les marques qui ont un{' '}
               <strong className="text-sage">propos clair</strong> et une stratégie
-              cadrée — la vôtre, ou celle qu'on construit en amont via un audit / une
+              cadrée : la vôtre, ou celle qu'on construit en amont via un audit / une
               stratégie à la carte. Régularité, attention au détail, ajustement.
             </p>
           </div>
@@ -370,7 +370,7 @@ function HandsOffBubble() {
         </p>
         <p className="mt-3 text-cream/85 text-[14px] leading-relaxed">
           On se déplace pour shooter vos stories, on monte avec soin, on publie, on
-          répond. De A à Z, c'est notre affaire — vous gardez votre temps pour faire
+          répond. De A à Z, c'est notre affaire. Vous gardez votre temps pour faire
           ce que vous savez faire mieux que quiconque. Vous validez. Point.
         </p>
       </motion.div>
@@ -432,13 +432,13 @@ function SalaryComparison({ range }: { range: { min: number; max: number } }) {
               La Bande Créative
             </div>
             <div className="mt-3 font-display text-3xl md:text-4xl leading-none text-cream">
-              {formatEuros(range.min)} — {formatEuros(range.max)}
+              {formatEuros(range.min)} à {formatEuros(range.max)}
               <span className="text-base text-cream/55 ml-1">/ mois</span>
             </div>
             <div className="mt-3 text-[13px] text-cream/80 leading-relaxed md:max-w-[300px]">
               <strong className="text-cream">Tout inclus</strong> : direction artistique,
               tournage, montage, écoute des commentaires, indicateurs. Une équipe
-              complète, des regards qui s'additionnent, du matériel pro — et zéro
+              complète, des regards qui s'additionnent, du matériel pro, et zéro
               gestion RH.
             </div>
           </div>
@@ -453,7 +453,7 @@ function SalaryComparison({ range }: { range: { min: number; max: number } }) {
           </p>
           <p className="mt-2 text-xs text-cream/55 italic max-w-xl mx-auto">
             Estimation coût employeur d'un CM junior en France (brut chargé + matériel +
-            management) — fourchette basse à haute.
+            management), fourchette basse à haute.
           </p>
         </div>
       </div>

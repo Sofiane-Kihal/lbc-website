@@ -8,7 +8,7 @@ export async function uploadMedia(
   if (file.size > MAX_UPLOAD_BYTES) {
     const mb = (file.size / 1024 / 1024).toFixed(1);
     throw new Error(
-      `Fichier trop volumineux (${mb} Mo) — max ${MAX_UPLOAD_BYTES / 1024 / 1024} Mo. Compressez l'image et réessayez.`
+      `Fichier trop volumineux (${mb} Mo). Max ${MAX_UPLOAD_BYTES / 1024 / 1024} Mo. Compressez l'image et réessayez.`
     );
   }
 
@@ -19,7 +19,7 @@ export async function uploadMedia(
   try {
     res = await fetch('/api/admin/upload', { method: 'POST', body: fd });
   } catch (e: any) {
-    throw new Error(`Erreur réseau — ${e?.message || 'connexion interrompue'}`);
+    throw new Error(`Erreur réseau : ${e?.message || 'connexion interrompue'}`);
   }
 
   // L'API renvoie normalement du JSON, mais une erreur infra (Netlify, proxy,
@@ -40,10 +40,10 @@ export async function uploadMedia(
       (text && text.length < 200 ? text : '') ||
       res.statusText ||
       `HTTP ${res.status}`;
-    throw new Error(`Erreur upload — ${detail}`);
+    throw new Error(`Erreur upload : ${detail}`);
   }
   if (!data?.url) {
-    throw new Error('Erreur upload — réponse invalide du serveur.');
+    throw new Error('Erreur upload : réponse invalide du serveur.');
   }
   return data;
 }

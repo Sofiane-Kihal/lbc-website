@@ -157,7 +157,7 @@ export default function Hero({
                 <Sparkles size={14} />
               </motion.span>
               <span className="text-[12px] font-medium uppercase tracking-[0.3em] opacity-60">
-                Agence indépendante — Mantes-la-Jolie · Yvelines
+                Agence indépendante · Mantes-la-Jolie · Yvelines
               </span>
             </motion.div>
 
@@ -182,7 +182,7 @@ export default function Hero({
             >
               On allie <strong className="text-cream">création artistique</strong> et{' '}
               <strong className="text-cream">performance</strong>. Un fond qui pense,
-              une forme qui touche — et derrière, une stratégie qui transforme. Pas de
+              une forme qui touche, et derrière, une stratégie qui transforme. Pas de
               jolies vidéos qui dorment dans un drive, pas de chiffres sans propos.
             </motion.p>
 

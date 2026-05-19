@@ -16,7 +16,7 @@ export const DEFAULT_DESCRIPTION =
 
 // Tagline used on the OG card and in the brand JSON-LD.
 export const TAGLINE =
-  "L'agence de communication qui allie création artistique et performance — Mantes-la-Jolie, Yvelines.";
+  "L'agence de communication qui allie création artistique et performance. Mantes-la-Jolie, Yvelines.";
 
 export const BUSINESS = {
   legalName: 'La Bande Créative',
@@ -59,27 +59,27 @@ export const SERVICE_CATALOG: Array<{ name: string; description: string }> = [
   {
     name: 'Production vidéo professionnelle',
     description:
-      "Films de marque, reels, contenus social media et événementiel — tournage multi-caméras Sony FX3, étalonnage et sound design pro.",
+      "Films de marque, reels, contenus social media et événementiel. Tournage multi-caméras Sony FX3, étalonnage et sound design pro.",
   },
   {
     name: 'Production photo professionnelle',
     description:
-      "Shootings portraits, packshots et reportages — visuels haute définition pensés pour vos réseaux et votre site.",
+      "Shootings portraits, packshots et reportages. Visuels haute définition pensés pour vos réseaux et votre site.",
   },
   {
     name: 'Stratégie de communication 360°',
     description:
-      "Audit, persona, ligne éditoriale et plan d'action multi-canal — la stratégie qui transforme avant la production.",
+      "Audit, persona, ligne éditoriale et plan d'action multi-canal. La stratégie qui transforme avant la production.",
   },
   {
     name: 'Community management',
     description:
-      "Gestion mensuelle de vos réseaux sociaux : édito, posts, stories, modération — à Mantes-la-Jolie et dans les Yvelines.",
+      "Gestion mensuelle de vos réseaux sociaux : édito, posts, stories, modération. À Mantes-la-Jolie et dans les Yvelines.",
   },
   {
     name: 'Podcast vidéo',
     description:
-      "Studio équipé 3 caméras Sony FX3 et 3 micros Shure SM7B — captation, montage et déclinaisons formats courts.",
+      "Studio équipé 3 caméras Sony FX3 et 3 micros Shure SM7B. Captation, montage et déclinaisons formats courts.",
   },
 ];
 
