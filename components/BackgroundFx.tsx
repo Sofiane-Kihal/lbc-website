@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import { BRAND, BRAND_RGB } from '@/lib/colors';
 import { cn } from '@/lib/utils';
 
 /* ----------------------------- Drifting Blobs ---------------------------- */
@@ -69,7 +70,7 @@ export function DriftingBlobs({
 /**
  * A large blurred halo that follows the cursor. Hero-worthy.
  */
-export function MouseSpotlight({ color = 'rgba(93,110,244,0.25)' }: { color?: string }) {
+export function MouseSpotlight({ color = `rgba(${BRAND_RGB.sage}, 0.25)` }: { color?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -108,7 +109,7 @@ export function DotsPattern({
   className?: string;
 }) {
   const fill =
-    variant === 'cream' ? '#FAF1E6' : variant === 'stone' ? '#A8A08D' : '#5D6EF4';
+    variant === 'cream' ? BRAND.cream : variant === 'stone' ? '#A8A08D' : BRAND.sage;
 
   return (
     <svg

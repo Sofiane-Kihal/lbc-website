@@ -3,9 +3,34 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ArrowLeft, ArrowUpRight } from 'lucide-react';
 import { getProjects } from '@/lib/storage';
+import { coverStyle } from '@/lib/colors';
+import {
+  SITE_NAME,
+  SITE_URL,
+  breadcrumbLd,
+  creativeWorkLd,
+  jsonLdScript,
+} from '@/lib/seo';
 import Footer from '@/components/Footer';
 
 export const dynamic = 'force-dynamic';
+
+function buildDescription(project: {
+  description: string;
+  metaDescription?: string;
+  categories: string[];
+  client: string;
+  year: string;
+}) {
+  if (project.metaDescription) return project.metaDescription;
+  const base =
+    project.description?.trim() ||
+    `Projet ${project.categories.join(', ')} réalisé pour ${project.client} en ${project.year}.`;
+  // 160 chars max — Google tronque au-delà. On garde le sens en coupant au
+  // dernier mot complet.
+  if (base.length <= 160) return base;
+  return base.slice(0, 157).replace(/\s+\S*$/, '') + '…';
+}
 
 export async function generateMetadata({
   params,
@@ -15,25 +40,33 @@ export async function generateMetadata({
   const { slug } = await params;
   const projects = await getProjects();
   const project = projects.find((p) => p.slug === slug);
-  if (!project) return { title: 'Projet introuvable' };
+  if (!project) {
+    return {
+      title: 'Projet introuvable',
+      robots: { index: false, follow: false },
+    };
+  }
 
   const title =
-    project.metaTitle || `${project.title} — La Bande Créative`;
-  const description =
-    project.metaDescription ||
-    project.description.slice(0, 160) ||
-    `Projet ${project.categories.join(', ')} réalisé pour ${project.client} en ${project.year}.`;
+    project.metaTitle ||
+    `${project.title} — ${project.categories.join(', ')} | ${SITE_NAME}`;
+  const description = buildDescription(project);
   const ogImage =
     project.cover.startsWith('http') || project.cover.startsWith('/api/media/')
       ? project.cover
       : undefined;
+  const url = `${SITE_URL}/projets/${project.slug}`;
 
   return {
     title,
     description,
+    alternates: { canonical: `/projets/${project.slug}` },
     openGraph: {
       title,
       description,
+      url,
+      type: 'article',
+      siteName: SITE_NAME,
       images: ogImage
         ? [{ url: ogImage, alt: project.coverAlt || project.title }]
         : undefined,
@@ -45,29 +78,6 @@ export async function generateMetadata({
       images: ogImage ? [ogImage] : undefined,
     },
   };
-}
-
-const gradients: Record<string, string> = {
-  'gradient:sage→moss': 'linear-gradient(135deg, #5d6ef4 0%, #010101 100%)',
-  'gradient:moss→stone': 'linear-gradient(135deg, #010101 0%, #C7C0AE 100%)',
-  'gradient:sage→stone': 'linear-gradient(135deg, #5d6ef4 0%, #C7C0AE 100%)',
-  'gradient:stone→cream': 'linear-gradient(135deg, #C7C0AE 0%, #FAF1E6 100%)',
-  'gradient:moss→sage': 'linear-gradient(135deg, #010101 0%, #5d6ef4 100%)',
-  'gradient:sage→cream': 'linear-gradient(135deg, #5d6ef4 0%, #FAF1E6 100%)',
-};
-
-function coverStyle(cover: string): React.CSSProperties {
-  if (cover?.startsWith('gradient:')) {
-    return { backgroundImage: gradients[cover] || gradients['gradient:sage→moss'] };
-  }
-  if (cover?.startsWith('http') || cover?.startsWith('/')) {
-    return {
-      backgroundImage: `url(${cover})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    };
-  }
-  return { backgroundImage: gradients['gradient:sage→moss'] };
 }
 
 export default async function ProjectPage({
@@ -82,8 +92,22 @@ export default async function ProjectPage({
 
   const others = projects.filter((p) => p.id !== project.id).slice(0, 3);
 
+  const breadcrumb = breadcrumbLd([
+    { name: 'Accueil', url: `${SITE_URL}/` },
+    { name: 'Projets', url: `${SITE_URL}/#projets` },
+    { name: project.title, url: `${SITE_URL}/projets/${project.slug}` },
+  ]);
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(creativeWorkLd(project))}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdScript(breadcrumb)}
+      />
       <header className="bg-cream sticky top-0 z-30 border-b border-sage/10">
         <div className="container-wide flex h-16 items-center justify-between">
           <Link

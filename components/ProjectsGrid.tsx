@@ -4,32 +4,10 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import type { Project } from '@/lib/defaults';
+import { coverStyle } from '@/lib/colors';
 import { DriftingBlobs, DotsPattern } from './BackgroundFx';
 import Reveal, { SOFT_SPRING } from './Reveal';
 import { TiltCard } from './MotionPrimitives';
-
-const gradients: Record<string, string> = {
-  'gradient:sage→moss': 'linear-gradient(135deg, #5d6ef4 0%, #010101 100%)',
-  'gradient:moss→stone': 'linear-gradient(135deg, #010101 0%, #C7C0AE 100%)',
-  'gradient:sage→stone': 'linear-gradient(135deg, #5d6ef4 0%, #C7C0AE 100%)',
-  'gradient:stone→cream': 'linear-gradient(135deg, #C7C0AE 0%, #FAF1E6 100%)',
-  'gradient:moss→sage': 'linear-gradient(135deg, #010101 0%, #5d6ef4 100%)',
-  'gradient:sage→cream': 'linear-gradient(135deg, #5d6ef4 0%, #FAF1E6 100%)',
-};
-
-function coverStyle(cover: string): React.CSSProperties {
-  if (cover.startsWith('gradient:')) {
-    return { backgroundImage: gradients[cover] || gradients['gradient:sage→moss'] };
-  }
-  if (cover.startsWith('http') || cover.startsWith('/')) {
-    return {
-      backgroundImage: `url(${cover})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    };
-  }
-  return { backgroundImage: gradients['gradient:sage→moss'] };
-}
 
 export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   return (

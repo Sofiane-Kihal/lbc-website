@@ -66,6 +66,7 @@ export default function HomeShell({
         <Hero
           onOpenIntake={openIntake}
           featuredProject={projects.find((p) => p.featured) ?? projects[0]}
+          strip={banners.heroStrip}
         />
         <LogoMarquee variant="noir" logos={banners.logos} />
         <ProjectsGrid projects={projects} />

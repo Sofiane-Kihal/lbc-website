@@ -13,7 +13,8 @@
       "Bash(npm run *)",
       "mcp__magic__21st_magic_component_inspiration",
       "Bash(mkdir -p /Users/sofiane/Development/LBC/website/app/api/admin/upload /Users/sofiane/Development/LBC/website/app/api/media/[key])",
-      "Bash(mkdir -p \"/Users/sofiane/Development/LBC/website/app/api/admin/upload\" \"/Users/sofiane/Development/LBC/website/app/api/media/[key]\")"
+      "Bash(mkdir -p \"/Users/sofiane/Development/LBC/website/app/api/admin/upload\" \"/Users/sofiane/Development/LBC/website/app/api/media/[key]\")",
+      "Bash(grep -i \">L<\\\\|>L $\\\\|>L\\\\b\\\\|\\\\\"L\\\\\"\")"
     ],
     "additionalDirectories": [
       "/Users/sofiane/Development/LBC/website/app/api/media"

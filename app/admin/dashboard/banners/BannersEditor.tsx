@@ -24,40 +24,54 @@ function blankLogo(): LogoItem {
 export default function BannersEditor({ initial }: { initial: Banners }) {
   const [logos, setLogos] = useState<LogoItem[]>(initial.logos);
   const [slogans, setSlogans] = useState<string[]>(initial.slogans);
+  const [heroCaption, setHeroCaption] = useState<string>(initial.heroStrip.caption);
+  const [heroLogos, setHeroLogos] = useState<LogoItem[]>(initial.heroStrip.logos);
   const [saving, setSaving] = useState(false);
   const [savedAt, setSavedAt] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [uploadingId, setUploadingId] = useState<string | null>(null);
 
-  function updateLogo(id: string, patch: Partial<LogoItem>) {
-    setLogos((arr) => arr.map((l) => (l === undefined || l.id !== id ? l : { ...l, ...patch })));
+  // Both the marquee and the hero strip share the same logo shape and the
+  // same set of mutations — these helpers parameterize on the setter.
+  function makeLogoOps(setter: React.Dispatch<React.SetStateAction<LogoItem[]>>) {
+    return {
+      update(id: string, patch: Partial<LogoItem>) {
+        setter((arr) =>
+          arr.map((l) => (l === undefined || l.id !== id ? l : { ...l, ...patch }))
+        );
+      },
+      move(id: string, dir: -1 | 1) {
+        setter((arr) => {
+          const idx = arr.findIndex((l) => l.id === id);
+          if (idx < 0) return arr;
+          const j = idx + dir;
+          if (j < 0 || j >= arr.length) return arr;
+          const next = arr.slice();
+          [next[idx], next[j]] = [next[j], next[idx]];
+          return next;
+        });
+      },
+      remove(id: string) {
+        setter((arr) => arr.filter((l) => l.id !== id));
+      },
+      async upload(id: string, file: File) {
+        setUploadingId(id);
+        setError(null);
+        try {
+          const { url } = await uploadMedia(file);
+          setter((arr) =>
+            arr.map((l) => (l.id === id ? { ...l, image: url } : l))
+          );
+        } catch (e: any) {
+          setError(e?.message || 'Erreur upload');
+        } finally {
+          setUploadingId(null);
+        }
+      },
+    };
   }
-  function moveLogo(id: string, dir: -1 | 1) {
-    setLogos((arr) => {
-      const idx = arr.findIndex((l) => l.id === id);
-      if (idx < 0) return arr;
-      const j = idx + dir;
-      if (j < 0 || j >= arr.length) return arr;
-      const next = arr.slice();
-      [next[idx], next[j]] = [next[j], next[idx]];
-      return next;
-    });
-  }
-  function removeLogo(id: string) {
-    setLogos((arr) => arr.filter((l) => l.id !== id));
-  }
-  async function uploadLogoImage(id: string, file: File) {
-    setUploadingId(id);
-    setError(null);
-    try {
-      const { url } = await uploadMedia(file);
-      updateLogo(id, { image: url });
-    } catch (e: any) {
-      setError(e?.message || 'Erreur upload');
-    } finally {
-      setUploadingId(null);
-    }
-  }
+  const marqueeOps = makeLogoOps(setLogos);
+  const heroOps = makeLogoOps(setHeroLogos);
 
   function moveSlogan(idx: number, dir: -1 | 1) {
     setSlogans((arr) => {
@@ -76,6 +90,10 @@ export default function BannersEditor({ initial }: { initial: Banners }) {
       const cleaned: Banners = {
         logos: logos.filter((l) => l.name.trim() || l.image),
         slogans: slogans.map((s) => s.trim()).filter(Boolean),
+        heroStrip: {
+          caption: heroCaption.trim(),
+          logos: heroLogos.filter((l) => l.name.trim() || l.image),
+        },
       };
       const res = await fetch('/api/admin/banners', {
         method: 'PUT',
@@ -86,6 +104,8 @@ export default function BannersEditor({ initial }: { initial: Banners }) {
       if (!res.ok) throw new Error(data.error || 'Erreur');
       setLogos(cleaned.logos);
       setSlogans(cleaned.slogans);
+      setHeroCaption(cleaned.heroStrip.caption);
+      setHeroLogos(cleaned.heroStrip.logos);
       setSavedAt(Date.now());
     } catch (e: any) {
       setError(e?.message || 'Erreur');
@@ -121,6 +141,40 @@ export default function BannersEditor({ initial }: { initial: Banners }) {
         <p className="mb-4 text-sm text-red-700 bg-red-50 px-4 py-2 rounded-lg">{error}</p>
       )}
 
+      {/* --- HERO STRIP — caption + small avatar logos --- */}
+      <section className="mb-12">
+        <div className="flex items-baseline justify-between gap-3 mb-4">
+          <div>
+            <h2 className="font-display text-2xl text-sage">Encart du Hero</h2>
+            <p className="text-sage/60 text-sm mt-1">
+              Le petit bloc juste sous les CTA du Hero : une phrase courte et
+              une rangée de logos « pastilles » empilés. Laisser vide pour
+              cacher l'encart sur le site.
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <Field label="Phrase affichée à côté des pastilles">
+            <input
+              className="input-base"
+              value={heroCaption}
+              placeholder="Ex. : + d'une vingtaine de marques accompagnées en 2025"
+              onChange={(e) => setHeroCaption(e.target.value)}
+            />
+          </Field>
+
+          <LogoList
+            logos={heroLogos}
+            ops={heroOps}
+            uploadingId={uploadingId}
+            onAdd={() => setHeroLogos((arr) => [...arr, blankLogo()])}
+            namePlaceholder="Ex. : Maison Laurel"
+            addLabel="Ajouter une pastille"
+          />
+        </div>
+      </section>
+
       {/* --- LOGOS --- */}
       <section className="mb-12">
         <div className="flex items-baseline justify-between gap-3 mb-4">
@@ -134,85 +188,14 @@ export default function BannersEditor({ initial }: { initial: Banners }) {
           </div>
         </div>
 
-        <div className="space-y-3">
-          {logos.map((l, idx) => (
-            <article key={l.id} className="card-soft p-4 md:p-5">
-              <div className="grid gap-4 md:grid-cols-[88px_1fr_auto] items-start">
-                <LogoPreview logo={l} />
-
-                <div className="grid gap-2.5 md:grid-cols-2">
-                  <Field label="Nom du client (alt + fallback texte)">
-                    <input
-                      className="input-base"
-                      value={l.name}
-                      placeholder="Ex. : Maison Laurel"
-                      onChange={(e) => updateLogo(l.id, { name: e.target.value })}
-                    />
-                  </Field>
-                  <Field label="Image (importée ou URL)">
-                    <div className="flex gap-2">
-                      <input
-                        className="input-base flex-1"
-                        value={l.image || ''}
-                        placeholder="Importez un fichier ou collez une URL"
-                        onChange={(e) => updateLogo(l.id, { image: e.target.value })}
-                      />
-                      <UploadButton
-                        uploading={uploadingId === l.id}
-                        onPick={(file) => uploadLogoImage(l.id, file)}
-                      />
-                    </div>
-                  </Field>
-                  <label className="md:col-span-2 inline-flex items-center gap-2 text-sm text-sage/80 mt-1">
-                    <input
-                      type="checkbox"
-                      checked={l.monochrome ?? true}
-                      onChange={(e) =>
-                        updateLogo(l.id, { monochrome: e.target.checked })
-                      }
-                      className="h-4 w-4 rounded border-sage/30 text-sage focus:ring-sage/30"
-                    />
-                    Affichage monochrome cream (recommandé sur le fond indigo)
-                  </label>
-                </div>
-
-                <div className="flex md:flex-col gap-1.5 items-center">
-                  <button
-                    onClick={() => moveLogo(l.id, -1)}
-                    disabled={idx === 0}
-                    aria-label="Monter"
-                    className="grid h-8 w-8 place-items-center rounded-full text-sage/50 hover:text-sage hover:bg-sage/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  >
-                    ▲
-                  </button>
-                  <button
-                    onClick={() => moveLogo(l.id, 1)}
-                    disabled={idx === logos.length - 1}
-                    aria-label="Descendre"
-                    className="grid h-8 w-8 place-items-center rounded-full text-sage/50 hover:text-sage hover:bg-sage/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                  >
-                    ▼
-                  </button>
-                  <button
-                    onClick={() => removeLogo(l.id)}
-                    aria-label="Supprimer"
-                    className="grid h-8 w-8 place-items-center rounded-full bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
-                  >
-                    <Trash2 size={13} />
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <button
-          onClick={() => setLogos((arr) => [...arr, blankLogo()])}
-          className="btn-secondary mt-4"
-        >
-          <Plus size={16} />
-          Ajouter un logo
-        </button>
+        <LogoList
+          logos={logos}
+          ops={marqueeOps}
+          uploadingId={uploadingId}
+          onAdd={() => setLogos((arr) => [...arr, blankLogo()])}
+          namePlaceholder="Ex. : Maison Laurel"
+          addLabel="Ajouter un logo"
+        />
       </section>
 
       {/* --- SLOGANS --- */}
@@ -280,6 +263,108 @@ export default function BannersEditor({ initial }: { initial: Banners }) {
           Ajouter un slogan
         </button>
       </section>
+    </>
+  );
+}
+
+type LogoOps = {
+  update: (id: string, patch: Partial<LogoItem>) => void;
+  move: (id: string, dir: -1 | 1) => void;
+  remove: (id: string) => void;
+  upload: (id: string, file: File) => void;
+};
+
+function LogoList({
+  logos,
+  ops,
+  uploadingId,
+  onAdd,
+  namePlaceholder,
+  addLabel,
+}: {
+  logos: LogoItem[];
+  ops: LogoOps;
+  uploadingId: string | null;
+  onAdd: () => void;
+  namePlaceholder: string;
+  addLabel: string;
+}) {
+  return (
+    <>
+      <div className="space-y-3">
+        {logos.map((l, idx) => (
+          <article key={l.id} className="card-soft p-4 md:p-5">
+            <div className="grid gap-4 md:grid-cols-[88px_1fr_auto] items-start">
+              <LogoPreview logo={l} />
+
+              <div className="grid gap-2.5 md:grid-cols-2">
+                <Field label="Nom du client (alt + fallback texte)">
+                  <input
+                    className="input-base"
+                    value={l.name}
+                    placeholder={namePlaceholder}
+                    onChange={(e) => ops.update(l.id, { name: e.target.value })}
+                  />
+                </Field>
+                <Field label="Image (importée ou URL)">
+                  <div className="flex gap-2">
+                    <input
+                      className="input-base flex-1"
+                      value={l.image || ''}
+                      placeholder="Importez un fichier ou collez une URL"
+                      onChange={(e) => ops.update(l.id, { image: e.target.value })}
+                    />
+                    <UploadButton
+                      uploading={uploadingId === l.id}
+                      onPick={(file) => ops.upload(l.id, file)}
+                    />
+                  </div>
+                </Field>
+                <label className="md:col-span-2 inline-flex items-center gap-2 text-sm text-sage/80 mt-1">
+                  <input
+                    type="checkbox"
+                    checked={l.monochrome ?? true}
+                    onChange={(e) => ops.update(l.id, { monochrome: e.target.checked })}
+                    className="h-4 w-4 rounded border-sage/30 text-sage focus:ring-sage/30"
+                  />
+                  Affichage monochrome cream (recommandé sur le fond indigo)
+                </label>
+              </div>
+
+              <div className="flex md:flex-col gap-1.5 items-center">
+                <button
+                  onClick={() => ops.move(l.id, -1)}
+                  disabled={idx === 0}
+                  aria-label="Monter"
+                  className="grid h-8 w-8 place-items-center rounded-full text-sage/50 hover:text-sage hover:bg-sage/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  ▲
+                </button>
+                <button
+                  onClick={() => ops.move(l.id, 1)}
+                  disabled={idx === logos.length - 1}
+                  aria-label="Descendre"
+                  className="grid h-8 w-8 place-items-center rounded-full text-sage/50 hover:text-sage hover:bg-sage/5 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                >
+                  ▼
+                </button>
+                <button
+                  onClick={() => ops.remove(l.id)}
+                  aria-label="Supprimer"
+                  className="grid h-8 w-8 place-items-center rounded-full bg-red-50 text-red-700 hover:bg-red-100 transition-colors"
+                >
+                  <Trash2 size={13} />
+                </button>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <button onClick={onAdd} className="btn-secondary mt-4">
+        <Plus size={16} />
+        {addLabel}
+      </button>
     </>
   );
 }

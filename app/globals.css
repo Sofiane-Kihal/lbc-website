@@ -3,7 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --sage: #5d6ef4;
+  /* Brand colors — keep in sync with lib/colors.ts (single source of truth). */
+  --sage: #4F60F1;
+  --sage-rgb: 79, 96, 241; /* used inside rgba(var(--sage-rgb), …) */
   --cream: #FAF1E6;
   --stone: #C7C0AE;
   --moss: #010101;
@@ -86,7 +88,7 @@ body {
   }
 
   .card-soft {
-    @apply rounded-3xl bg-white/60 backdrop-blur-sm border border-sage/10 shadow-[0_1px_2px_rgba(93,110,244,0.04),0_8px_30px_rgba(93,110,244,0.08)];
+    @apply rounded-3xl bg-white/60 backdrop-blur-sm border border-sage/10 shadow-[0_1px_2px_rgba(var(--sage-rgb),0.04),0_8px_30px_rgba(var(--sage-rgb),0.08)];
   }
 
   /* For sage-background sections: same shape, but cream-toned so cards pop

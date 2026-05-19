@@ -52,13 +52,20 @@ c'est le fil rouge. Tout le contenu doit refléter cette double casquette.
 
 | Token       | Hex                  | Usage                                           |
 | ----------- | -------------------- | ----------------------------------------------- |
-| `sage`      | `#5D6EF4`            | Couleur principale (indigo). Texte, structures  |
-| `sage-700`  | `#4854C8`            | Hovers, état foncé                              |
+| `sage`      | `#4F60F1`            | Couleur principale (indigo). Texte, structures  |
+| `sage-700`  | `#3A46C5`            | Hovers, état foncé                              |
 | `cream`     | `#FAF1E6`            | Fond des sections claires, texte sur indigo/noir |
 | `stone`     | `#C7C0AE`            | Surfaces, fond de section neutre                |
 | `moss`      | `#010101`            | **C'est le NOIR** (le nom est historique)       |
 | `accent`    | `#FF6B35`            | Couleur d'attention (orange complémentaire)     |
 | `accent-600`| `#E85420`            | Hover des CTA orange                            |
+
+> **Source unique** : toutes les couleurs (hex + RGB) et la map de gradients
+> `gradient:…→…` vivent dans `lib/colors.ts`. `tailwind.config.ts` y importe
+> `SAGE_SCALE`, et `app/globals.css` y mirroite `--sage` + `--sage-rgb` (utile
+> pour les arbitrary values type `shadow-[…rgba(var(--sage-rgb),0.18)]`).
+> **Pour changer le sage** : éditer `lib/colors.ts` + `--sage` / `--sage-rgb`
+> dans `globals.css`. Rien d'autre à toucher.
 
 > **Important** : `moss` n'est plus vert — c'est noir. Le nom du token est
 > resté pour éviter le grand find/replace mais ne pas créer de confusion :
@@ -340,8 +347,10 @@ toujours via le CTA Hero ou la section Contact.
    `onClick={(e) => e.stopPropagation()}` sur la card. Pas l'inverse.
 
 3. **Tailwind `rgba()` codé en dur** : si la couleur change, les ombres en
-   `shadow-[0_8px_30px_rgba(86,98,72,0.06)]` deviennent fausses. Toujours
-   utiliser le RGB de la couleur courante (`93,110,244` pour sage indigo).
+   `shadow-[0_8px_30px_rgba(86,98,72,0.06)]` deviennent fausses. Pour le sage,
+   utiliser la CSS var : `shadow-[0_8px_30px_rgba(var(--sage-rgb),0.08)]`.
+   Pour les autres couleurs, importer depuis `lib/colors.ts` ou utiliser le
+   token Tailwind avec opacité (`shadow-accent/20`).
 
 4. **API routes GET `force-dynamic`** : sans ça, les GET admin peuvent être
    figés au build et l'admin afficher des données obsolètes après save.
@@ -359,7 +368,42 @@ toujours via le CTA Hero ou la section Contact.
 
 ---
 
-## 11. Vérifications avant de pousser
+## 11. SEO
+
+Toutes les constantes SEO + builders JSON-LD vivent dans
+[`lib/seo.ts`](lib/seo.ts). En particulier :
+
+- `SITE_URL` (`labandecreative.fr`) — utilisé par `metadataBase`, sitemap et
+  `<link rel="canonical">`.
+- `BUSINESS` — profil pro (email, téléphone, adresse, géo, areaServed). Champs
+  vides → automatiquement omis du JSON-LD. **Pour mettre à jour le téléphone
+  ou l'adresse postale, éditer uniquement ce bloc.**
+- `SERVICE_CATALOG` — alimente `OfferCatalog` du `LocalBusiness` schema.
+- Builders : `organizationLd()`, `websiteLd()`, `localBusinessLd()`,
+  `breadcrumbLd()`, `creativeWorkLd()`, helper `jsonLdScript()`.
+
+Pages clés :
+
+- [`app/layout.tsx`](app/layout.tsx) — métadonnées globales + 3 JSON-LD
+  (Organization, WebSite, LocalBusiness) injectés dans `<head>`.
+- [`app/sitemap.ts`](app/sitemap.ts) — généré dynamiquement (homepage +
+  toutes les pages projets, lecture via `getProjects()`).
+- [`app/robots.ts`](app/robots.ts) — autorise tout sauf `/admin` et `/api`.
+- [`app/projets/[slug]/page.tsx`](app/projets/[slug]/page.tsx) — canonical,
+  OG type article, JSON-LD `CreativeWork` + `BreadcrumbList`.
+- [`app/admin/page.tsx`](app/admin/page.tsx) et
+  [`app/admin/dashboard/layout.tsx`](app/admin/dashboard/layout.tsx) —
+  `robots: { index: false, follow: false, nocache: true }`.
+
+Assets à fournir dans `/public` (non créés automatiquement) :
+
+- `og.png` — 1200×630 pour Open Graph / Twitter Card
+- `favicon.ico`, `apple-touch-icon.png` (180×180)
+
+Sans ces fichiers, les balises pointent vers des 404 — pas bloquant pour
+le crawl mais le rendu social sera dégradé.
+
+## 12. Vérifications avant de pousser
 
 Toujours ces deux commandes en local avant un push :
 
@@ -374,7 +418,7 @@ deploy preview pour les commits locaux non poussés.
 
 ---
 
-## 12. Tone of voice (pour toute copy à écrire)
+## 13. Tone of voice (pour toute copy à écrire)
 
 - **Tutoiement** dans les contenus internes / docs / commentaires de code.
 - **Vouvoiement** dans tous les textes face au visiteur (Hero, sections, CTA,

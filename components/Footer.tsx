@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Instagram, Linkedin, Youtube, Mail } from 'lucide-react';
+import { BUSINESS } from '@/lib/seo';
 import { SOFT_SPRING } from './Reveal';
 
 const navLinks = [
@@ -32,19 +33,29 @@ export default function Footer() {
             viewport={{ once: true, margin: '-40px' }}
             transition={SOFT_SPRING}
           >
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <motion.span
-                whileHover={{ rotate: 14, scale: 1.06 }}
-                transition={SOFT_SPRING}
-                className="grid place-items-center h-9 w-9 rounded-full bg-cream text-sage font-display text-lg"
-              >
-                L
-              </motion.span>
+            <Link href="/" className="flex items-center group">
               <span className="font-display text-xl">La Bande Créative</span>
             </Link>
             <p className="mt-5 max-w-sm text-cream/80 text-sm leading-relaxed">
-              On allie création artistique et performance. Pas de jolie vidéo qui dort —
-              une stratégie qui transforme.
+              Agence de communication 360° à <strong className="text-cream">Mantes-la-Jolie</strong>
+              {' '}— production vidéo, photo et stratégie pour les marques des Yvelines (78)
+              et d'Île-de-France.
+            </p>
+            <address className="mt-4 text-cream/60 text-xs not-italic" itemScope itemType="https://schema.org/PostalAddress">
+              <span itemProp="streetAddress">{BUSINESS.street}</span>
+              <br />
+              <span itemProp="postalCode">{BUSINESS.postalCode}</span>{' '}
+              <span itemProp="addressLocality">{BUSINESS.city}</span>{' '}·{' '}
+              <span itemProp="addressRegion">Yvelines</span>,{' '}
+              <span itemProp="addressCountry">France</span>
+            </address>
+            <p className="mt-3 text-cream/70 text-xs">
+              <a
+                href={`tel:${BUSINESS.phone}`}
+                className="hover:text-cream transition-colors"
+              >
+                {BUSINESS.phoneDisplay}
+              </a>
             </p>
           </motion.div>
           <motion.div

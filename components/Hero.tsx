@@ -10,33 +10,11 @@ import {
   useTransform,
 } from 'framer-motion';
 import { ArrowRight, ArrowUpRight, Sparkles } from 'lucide-react';
-import type { Project } from '@/lib/defaults';
+import type { HeroStrip, Project } from '@/lib/defaults';
+import { BRAND, coverStyle } from '@/lib/colors';
 import { DriftingBlobs, FloatingParticles } from './BackgroundFx';
 import { SOFT_SPRING } from './Reveal';
 import { Magnetic, TiltCard, WordReveal } from './MotionPrimitives';
-
-const COVER_GRADIENTS: Record<string, string> = {
-  'gradient:sage→moss': 'linear-gradient(135deg, #5d6ef4 0%, #010101 100%)',
-  'gradient:moss→stone': 'linear-gradient(135deg, #010101 0%, #C7C0AE 100%)',
-  'gradient:sage→stone': 'linear-gradient(135deg, #5d6ef4 0%, #C7C0AE 100%)',
-  'gradient:stone→cream': 'linear-gradient(135deg, #C7C0AE 0%, #FAF1E6 100%)',
-  'gradient:moss→sage': 'linear-gradient(135deg, #010101 0%, #5d6ef4 100%)',
-  'gradient:sage→cream': 'linear-gradient(135deg, #5d6ef4 0%, #FAF1E6 100%)',
-};
-
-function coverStyle(cover: string): React.CSSProperties {
-  if (cover.startsWith('gradient:')) {
-    return { backgroundImage: COVER_GRADIENTS[cover] || COVER_GRADIENTS['gradient:sage→moss'] };
-  }
-  if (cover.startsWith('http') || cover.startsWith('/')) {
-    return {
-      backgroundImage: `url(${cover})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-    };
-  }
-  return { backgroundImage: COVER_GRADIENTS['gradient:sage→moss'] };
-}
 
 const TAGLINE_PHRASES = [
   'qui performe.',
@@ -133,10 +111,15 @@ function Typewriter({
 export default function Hero({
   onOpenIntake,
   featuredProject,
+  strip,
 }: {
   onOpenIntake: () => void;
   featuredProject?: Project | null;
+  strip?: HeroStrip | null;
 }) {
+  const stripLogos = strip?.logos ?? [];
+  const stripCaption = strip?.caption?.trim() ?? '';
+  const showStrip = stripLogos.length > 0 || stripCaption.length > 0;
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -174,7 +157,7 @@ export default function Hero({
                 <Sparkles size={14} />
               </motion.span>
               <span className="text-[12px] font-medium uppercase tracking-[0.3em] opacity-60">
-                Agence indépendante — Mantes-la-Jolie
+                Agence indépendante — Mantes-la-Jolie · Yvelines
               </span>
             </motion.div>
 
@@ -232,27 +215,62 @@ export default function Hero({
               </a>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.95 }}
-              className="mt-12 flex items-center gap-6 text-cream/70 text-sm"
-            >
-              <div className="flex -space-x-2">
-                {['#5d6ef4', '#FF6B35', '#010101'].map((c, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, scale: 0.4, x: -8 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    transition={{ ...SOFT_SPRING, delay: 1 + i * 0.08 }}
-                    whileHover={{ y: -4, scale: 1.08 }}
-                    className="h-9 w-9 rounded-full border-2 border-cream"
-                    style={{ background: c }}
-                  />
-                ))}
-              </div>
-              <span>+ d'une vingtaine de marques accompagnées en 2025</span>
-            </motion.div>
+            {showStrip && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1, delay: 0.95 }}
+                className="mt-12 flex items-center gap-6 text-cream/70 text-sm"
+              >
+                {stripLogos.length > 0 ? (
+                  <div className="flex -space-x-2">
+                    {stripLogos.map((l, i) => (
+                      <motion.div
+                        key={l.id}
+                        initial={{ opacity: 0, scale: 0.4, x: -8 }}
+                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                        transition={{ ...SOFT_SPRING, delay: 1 + i * 0.08 }}
+                        whileHover={{ y: -4, scale: 1.08 }}
+                        className="grid h-9 w-9 place-items-center rounded-full border-2 border-cream bg-cream overflow-hidden"
+                        title={l.name}
+                      >
+                        {l.image ? (
+                          <img
+                            src={l.image}
+                            alt={l.name}
+                            className="h-full w-full object-contain p-1"
+                            style={
+                              (l.monochrome ?? true)
+                                ? { filter: 'brightness(0)', opacity: 0.85 }
+                                : undefined
+                            }
+                          />
+                        ) : (
+                          <span className="font-display text-sage text-xs">
+                            {l.name.slice(0, 1).toUpperCase()}
+                          </span>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex -space-x-2">
+                    {[BRAND.sage, BRAND.accent, BRAND.moss].map((c, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ opacity: 0, scale: 0.4, x: -8 }}
+                        animate={{ opacity: 1, scale: 1, x: 0 }}
+                        transition={{ ...SOFT_SPRING, delay: 1 + i * 0.08 }}
+                        whileHover={{ y: -4, scale: 1.08 }}
+                        className="h-9 w-9 rounded-full border-2 border-cream"
+                        style={{ background: c }}
+                      />
+                    ))}
+                  </div>
+                )}
+                {stripCaption && <span>{stripCaption}</span>}
+              </motion.div>
+            )}
           </div>
 
           {/* Right — featured project card */}

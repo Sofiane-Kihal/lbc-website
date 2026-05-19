@@ -81,7 +81,7 @@ export default function Subscriptions({
                 'group relative rounded-3xl p-7 md:p-8 flex flex-col transition-shadow duration-500 overflow-hidden',
                 s.featured
                   ? 'bg-sage text-cream shadow-2xl shadow-sage/30 lg:scale-105 lg:-my-2'
-                  : 'card-soft hover:shadow-[0_24px_60px_rgba(93,110,244,0.18)]'
+                  : 'card-soft hover:shadow-[0_24px_60px_rgba(var(--sage-rgb),0.18)]'
               )}
             >
               {/* Featured: soft pulsing halo behind */}
@@ -326,7 +326,7 @@ function HandsOffBubble() {
       <motion.div
         animate={{ y: [0, -4, 0], rotate: [-0.5, 0.6, -0.5] }}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        className="relative rounded-[28px] bg-sage text-cream px-6 py-5 md:px-7 md:py-6 shadow-[0_18px_50px_rgba(93,110,244,0.30)] motion-reduce:!animate-none"
+        className="relative rounded-[28px] bg-sage text-cream px-6 py-5 md:px-7 md:py-6 shadow-[0_18px_50px_rgba(var(--sage-rgb),0.30)] motion-reduce:!animate-none"
       >
         {/* Tail pointing down toward the cards */}
         <span
@@ -388,7 +388,7 @@ function SalaryComparison({ range }: { range: { min: number; max: number } }) {
       transition={SOFT_SPRING}
       className="mt-16 max-w-5xl mx-auto relative"
     >
-      <div className="relative rounded-3xl bg-sage text-cream px-6 py-8 md:px-10 md:py-10 overflow-hidden shadow-[0_24px_60px_rgba(93,110,244,0.25)]">
+      <div className="relative rounded-3xl bg-sage text-cream px-6 py-8 md:px-10 md:py-10 overflow-hidden shadow-[0_24px_60px_rgba(var(--sage-rgb),0.25)]">
         <div className="absolute inset-0 grain pointer-events-none opacity-50" />
         <motion.span
           aria-hidden

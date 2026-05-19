@@ -84,9 +84,19 @@ export const setSubscriptions = (v: Subscription[]) =>
 
 export const getBanners = async (): Promise<Banners> => {
   const data = await read<Partial<Banners>>(KEYS.banners, defaultBanners);
+  const heroStrip = data?.heroStrip;
   return {
     logos: Array.isArray(data?.logos) ? data.logos : defaultBanners.logos,
     slogans: Array.isArray(data?.slogans) ? data.slogans : defaultBanners.slogans,
+    heroStrip: {
+      caption:
+        typeof heroStrip?.caption === 'string'
+          ? heroStrip.caption
+          : defaultBanners.heroStrip.caption,
+      logos: Array.isArray(heroStrip?.logos)
+        ? heroStrip.logos
+        : defaultBanners.heroStrip.logos,
+    },
   };
 };
 export const setBanners = (v: Banners) => write(KEYS.banners, v);

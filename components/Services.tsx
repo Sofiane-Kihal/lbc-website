@@ -208,10 +208,10 @@ export default function Services() {
         <div className="mt-14 flex justify-center">
           <a
             href="#tarifs"
-            className="inline-flex items-center gap-2 text-sage italic font-medium hover:text-sage-700 transition-colors"
+            className="inline-flex items-center gap-2 text-cream italic font-medium hover:text-cream/70 transition-colors"
           >
             <span>Voir nos grilles tarifaires</span>
-            <span className="h-px w-10 bg-sage" />
+            <span className="h-px w-10 bg-cream/60" />
           </a>
         </div>
       </div>

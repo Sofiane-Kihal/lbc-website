@@ -13,28 +13,11 @@ import {
   Star,
 } from 'lucide-react';
 import type { Project } from '@/lib/defaults';
+import { COVER_GRADIENTS as GRADIENT_PREVIEWS, COVER_PRESETS } from '@/lib/colors';
 import { slugify } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 import { SlugInput, ListInput } from '../inputs';
 import { uploadMedia } from '../upload';
-
-const COVER_PRESETS = [
-  'gradient:sage→moss',
-  'gradient:moss→stone',
-  'gradient:sage→stone',
-  'gradient:stone→cream',
-  'gradient:moss→sage',
-  'gradient:sage→cream',
-];
-
-const GRADIENT_PREVIEWS: Record<string, string> = {
-  'gradient:sage→moss': 'linear-gradient(135deg, #5d6ef4 0%, #010101 100%)',
-  'gradient:moss→stone': 'linear-gradient(135deg, #010101 0%, #C7C0AE 100%)',
-  'gradient:sage→stone': 'linear-gradient(135deg, #5d6ef4 0%, #C7C0AE 100%)',
-  'gradient:stone→cream': 'linear-gradient(135deg, #C7C0AE 0%, #FAF1E6 100%)',
-  'gradient:moss→sage': 'linear-gradient(135deg, #010101 0%, #5d6ef4 100%)',
-  'gradient:sage→cream': 'linear-gradient(135deg, #5d6ef4 0%, #FAF1E6 100%)',
-};
 
 function blank(): Project {
   return {

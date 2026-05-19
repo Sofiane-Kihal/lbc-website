@@ -72,9 +72,20 @@ export type LogoItem = {
   monochrome?: boolean; // render as cream silhouette on the indigo bg (default true)
 };
 
+export type HeroStrip = {
+  // Small caption next to the avatar logos in the Hero ("+ d'une vingtaine
+  // de marques accompagnées en 2025"). Hidden when both caption and logos
+  // are empty.
+  caption: string;
+  // Small stack of round avatar-style logos displayed next to the caption.
+  // When empty, the Hero falls back to a decorative trio of colored discs.
+  logos: LogoItem[];
+};
+
 export type Banners = {
   logos: LogoItem[]; // 1st banner — logo wall
   slogans: string[]; // 2nd banner — text marquee
+  heroStrip: HeroStrip; // small strip inside the Hero (under the CTAs)
 };
 
 export const defaultProjects: Project[] = [
@@ -469,4 +480,8 @@ export const defaultBanners: Banners = {
     "L'œil qui pique, le propos qui marque",
     'On écoute avant de produire',
   ],
+  heroStrip: {
+    caption: "+ d'une vingtaine de marques accompagnées en 2025",
+    logos: [],
+  },
 };

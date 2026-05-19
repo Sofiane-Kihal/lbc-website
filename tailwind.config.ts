@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import { SAGE_SCALE } from './lib/colors';
 
 const config: Config = {
   content: [
@@ -9,19 +10,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        sage: {
-          DEFAULT: '#5D6EF4',
-          50: '#EEF0FE',
-          100: '#DCE0FD',
-          200: '#B9C2FB',
-          300: '#96A4F9',
-          400: '#7385F6',
-          500: '#7080F6',
-          600: '#5D6EF4',
-          700: '#4854C8',
-          800: '#3441A0',
-          900: '#22306C',
-        },
+        sage: SAGE_SCALE,
         cream: {
           DEFAULT: '#FAF1E6',
           50: '#FFFCF8',
