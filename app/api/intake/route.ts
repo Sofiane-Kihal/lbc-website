@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sendIntakeEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 
@@ -23,12 +24,13 @@ export async function POST(req: NextRequest) {
   const lead = {
     id,
     submittedAt: payload.submittedAt || new Date().toISOString(),
+    source: payload.source,
+    preset: payload.preset ?? null,
     answers: payload.answers || {},
     ip: req.headers.get('x-forwarded-for') || null,
     userAgent: req.headers.get('user-agent') || null,
   };
 
-  // Persist if Blobs available; otherwise log so dev sees it.
   const store = await getStoreSafe();
   if (store) {
     try {
@@ -39,6 +41,14 @@ export async function POST(req: NextRequest) {
   } else {
     // eslint-disable-next-line no-console
     console.log('[intake] (no blobs) ', JSON.stringify(lead, null, 2));
+  }
+
+  // Forward to the agency inbox. Non-blocking from the user's perspective :
+  // we await so we can log delivery problems, but never fail the request
+  // (the lead is already persisted in Blobs).
+  const emailResult = await sendIntakeEmail(lead);
+  if (!emailResult.ok) {
+    console.error('[intake] email forwarding failed:', emailResult.reason);
   }
 
   return NextResponse.json({ ok: true, id });
